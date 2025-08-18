@@ -2,30 +2,40 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Recherche Opérationnelle & Graphes</title>
+  <title>Cours - RO & Graphes</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-50">
   <nav class="bg-blue-600 text-white p-4 flex justify-between">
-    <h1 class="font-bold text-lg">Cours & Exercices</h1>
-    <div class="space-x-4">
-      <a href="index.html" class="hover:underline">Accueil</a>
-      <a href="cours.html" class="hover:underline">Cours</a>
-      <a href="exercices.html" class="hover:underline">Exercices</a>
+    <h1 class="font-bold">Cours</h1>
+    <div>
+      <a href="index.html" class="mr-4">Accueil</a>
+      <a href="exercices.html">Exercices</a>
     </div>
   </nav>
 
-  <section class="text-center py-20">
-    <h2 class="text-3xl font-bold mb-4">Bienvenue 👋</h2>
-    <p class="text-lg max-w-2xl mx-auto">
-      Explorez les notions de <strong>Recherche Opérationnelle</strong> et de <strong>Théorie des Graphes</strong> 
-      à travers des cours détaillés et des exercices interactifs.
-    </p>
-    <div class="mt-6 space-x-4">
-      <a href="cours.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg">Cours</a>
-      <a href="exercices.html" class="bg-green-600 text-white px-6 py-3 rounded-lg">Exercices</a>
+  <section class="p-8 grid grid-cols-2 gap-6">
+    <!-- Recherche Opérationnelle -->
+    <div class="bg-white shadow p-6 rounded-lg">
+      <h2 class="text-xl font-bold mb-2">Recherche Opérationnelle</h2>
+      <ul class="list-disc pl-6">
+        <li>Introduction à la RO</li>
+        <li>Programmation linéaire</li>
+        <li>Problème du transport</li>
+        <li>Problème d’affectation</li>
+      </ul>
     </div>
-    
+
+    <!-- Théorie des Graphes -->
+    <div class="bg-white shadow p-6 rounded-lg">
+      <h2 class="text-xl font-bold mb-2">Théorie des Graphes</h2>
+      <ul class="list-disc pl-6">
+        <li>Définitions de base</li>
+        <li>Graphes orientés et non orientés</li>
+        <li>Arbres</li>
+        <li>Algorithmes de plus court chemin</li>
+      </ul>
+    </div>
   </section>
 </body>
 </html>
