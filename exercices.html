@@ -6,18 +6,32 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="script.js"></script>
 </head>
-<body class="bg-gray-50">
-  <nav class="bg-blue-600 text-white p-4 flex justify-between">
-    <h1 class="font-bold">Exercices</h1>
-    <a href="index.html">Accueil</a>
-  </nav>
-  <div class="p-6">
-    <h1 class="text-3xl font-bold mb-4">Exercices interactifs - Algorithmes sur Graphes</h1>
+<body class="bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 min-h-screen flex flex-col">
 
-    <div class="flex space-x-4 mb-4">
-      <button onclick="setMode('node')" class="px-4 py-2 bg-blue-500 text-white rounded">Ajouter Sommet</button>
-      <button onclick="setMode('edge')" class="px-4 py-2 bg-green-500 text-white rounded">Ajouter Liaison</button>
-      <select id="algoSelect" class="px-4 py-2 border rounded">
+  <!-- Navbar -->
+  <nav class="bg-blue-700 text-white px-6 py-4 shadow-md flex justify-between items-center sticky top-0 z-50">
+    <h1 class="font-extrabold text-xl">🧩 Exercices interactifs</h1>
+    <a href="index.html" class="hover:text-yellow-300 transition">🏠 Accueil</a>
+  </nav>
+
+  <!-- Contenu -->
+  <div class="flex-1 p-6 max-w-6xl mx-auto">
+    <h1 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+      Algorithmes sur Graphes
+    </h1>
+
+    <!-- Outils -->
+    <div class="flex flex-wrap gap-4 justify-center mb-6">
+      <button onclick="setMode('node')" 
+              class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow transition">
+        ➕ Ajouter Sommet
+      </button>
+      <button onclick="setMode('edge')" 
+              class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow transition">
+        🔗 Ajouter Liaison
+      </button>
+      <select id="algoSelect" 
+              class="px-5 py-2 rounded-xl border shadow bg-white focus:ring-2 focus:ring-blue-400">
         <option value="dijkstra">Dijkstra (PCC)</option>
         <option value="bellman">Bellman-Ford</option>
         <option value="floyd">Floyd-Warshall</option>
@@ -26,73 +40,32 @@
         <option value="kruskal">Kruskal</option>
         <option value="longest">Plus long chemin (DAG)</option>
       </select>
-      <button onclick="runAlgorithm()" class="px-4 py-2 bg-purple-500 text-white rounded">Lancer</button>
+      <button onclick="runAlgorithm()" 
+              class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl shadow transition">
+        🚀 Lancer
+      </button>
     </div>
 
-    <canvas id="graphCanvas" width="800" height="500" class="border bg-white"></canvas>
+    <!-- Canvas -->
+    <div class="flex justify-center">
+      <canvas id="graphCanvas" width="900" height="500" 
+              class="border-2 border-gray-300 bg-white rounded-xl shadow-md">
+      </canvas>
+    </div>
 
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold">Résultat :</h2>
-      <pre id="output" class="p-4 bg-gray-200 rounded mt-2"></pre>
+    <!-- Résultats -->
+    <div class="mt-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-2">📊 Résultat :</h2>
+      <pre id="output" 
+           class="p-4 bg-gray-900 text-green-300 rounded-xl shadow-md overflow-auto text-sm">
+      </pre>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="bg-blue-800 text-white text-center py-4">
+    <p class="text-sm">© 2025 - Exercices Graphes | Tous droits réservés.</p>
+  </footer>
+
 </body>
 </html>
-<script>
-  let mode = 'node'; // 'node' or 'edge'
-  const canvas = document.getElementById('graphCanvas');
-  const ctx = canvas.getContext('2d');
-  const output = document.getElementById('output');
-  let nodes = [];
-  let edges = [];
-
-  function setMode(newMode) {
-    mode = newMode;
-    output.textContent = `Mode actuel : ${mode}`;
-  }
-
-  canvas.addEventListener('click', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    if (mode === 'node') {
-      nodes.push({ x, y });
-      drawGraph();
-      output.textContent = `Sommet ajouté à (${x}, ${y})`;
-    } else if (mode === 'edge' && nodes.length > 1) {
-      edges.push({ from: nodes[nodes.length - 2], to: { x, y } });
-      drawGraph();
-      output.textContent = `Liaison ajoutée de (${nodes[nodes.length - 2].x}, ${nodes[nodes.length - 2].y}) à (${x}, ${y})`;
-    }
-  });
-
-  function drawGraph() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'black';
-    
-    // Dessiner les sommets
-    nodes.forEach(node => {
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Dessiner les liaisons
-    edges.forEach(edge => {
-      ctx.beginPath();
-      ctx.moveTo(edge.from.x, edge.from.y);
-      ctx.lineTo(edge.to.x, edge.to.y);
-      ctx.stroke();
-    });
-  }
-
-  function runAlgorithm() {
-    const algoSelect = document.getElementById('algoSelect');
-    const algo = algoSelect.value;
-    
-    // Placeholder pour l'exécution de l'algorithme
-    output.textContent += `\nAlgorithme sélectionné : ${algo}`;
-    
-    // Implémentez ici la logique pour chaque algorithme
-  }
