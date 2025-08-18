@@ -2,30 +2,97 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Exercices interactifs</title>
+  <title>Exercices Graphes</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="script.js"></script>
 </head>
 <body class="bg-gray-50">
   <nav class="bg-blue-600 text-white p-4 flex justify-between">
     <h1 class="font-bold">Exercices</h1>
     <a href="index.html">Accueil</a>
   </nav>
+  <div class="p-6">
+    <h1 class="text-3xl font-bold mb-4">Exercices interactifs - Algorithmes sur Graphes</h1>
 
-  <div class="p-6 flex space-x-6">
-    <!-- Panneau de contrôle -->
-    <div class="w-1/4 bg-white shadow rounded p-4">
-      <h2 class="font-bold mb-4">Outils</h2>
-      <button onclick="addNode()" class="w-full bg-blue-500 text-white p-2 rounded mb-2">➕ Ajouter un point</button>
-      <button onclick="setLinkMode()" class="w-full bg-green-500 text-white p-2 rounded mb-2">🔗 Ajouter une liaison</button>
-      <button onclick="runDijkstra()" class="w-full bg-purple-600 text-white p-2 rounded">▶️ Dijkstra</button>
+    <div class="flex space-x-4 mb-4">
+      <button onclick="setMode('node')" class="px-4 py-2 bg-blue-500 text-white rounded">Ajouter Sommet</button>
+      <button onclick="setMode('edge')" class="px-4 py-2 bg-green-500 text-white rounded">Ajouter Liaison</button>
+      <select id="algoSelect" class="px-4 py-2 border rounded">
+        <option value="dijkstra">Dijkstra (PCC)</option>
+        <option value="bellman">Bellman-Ford</option>
+        <option value="floyd">Floyd-Warshall</option>
+        <option value="dfs">DFS</option>
+        <option value="bfs">BFS</option>
+        <option value="kruskal">Kruskal</option>
+        <option value="longest">Plus long chemin (DAG)</option>
+      </select>
+      <button onclick="runAlgorithm()" class="px-4 py-2 bg-purple-500 text-white rounded">Lancer</button>
     </div>
 
-    <!-- Zone graphique -->
-    <div class="flex-1 bg-gray-100 shadow rounded relative">
-      <canvas id="graphCanvas" width="800" height="500" class="border border-gray-400"></canvas>
+    <canvas id="graphCanvas" width="800" height="500" class="border bg-white"></canvas>
+
+    <div class="mt-4">
+      <h2 class="text-xl font-semibold">Résultat :</h2>
+      <pre id="output" class="p-4 bg-gray-200 rounded mt-2"></pre>
     </div>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
+<script>
+  let mode = 'node'; // 'node' or 'edge'
+  const canvas = document.getElementById('graphCanvas');
+  const ctx = canvas.getContext('2d');
+  const output = document.getElementById('output');
+  let nodes = [];
+  let edges = [];
+
+  function setMode(newMode) {
+    mode = newMode;
+    output.textContent = `Mode actuel : ${mode}`;
+  }
+
+  canvas.addEventListener('click', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    if (mode === 'node') {
+      nodes.push({ x, y });
+      drawGraph();
+      output.textContent = `Sommet ajouté à (${x}, ${y})`;
+    } else if (mode === 'edge' && nodes.length > 1) {
+      edges.push({ from: nodes[nodes.length - 2], to: { x, y } });
+      drawGraph();
+      output.textContent = `Liaison ajoutée de (${nodes[nodes.length - 2].x}, ${nodes[nodes.length - 2].y}) à (${x}, ${y})`;
+    }
+  });
+
+  function drawGraph() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    
+    // Dessiner les sommets
+    nodes.forEach(node => {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Dessiner les liaisons
+    edges.forEach(edge => {
+      ctx.beginPath();
+      ctx.moveTo(edge.from.x, edge.from.y);
+      ctx.lineTo(edge.to.x, edge.to.y);
+      ctx.stroke();
+    });
+  }
+
+  function runAlgorithm() {
+    const algoSelect = document.getElementById('algoSelect');
+    const algo = algoSelect.value;
+    
+    // Placeholder pour l'exécution de l'algorithme
+    output.textContent += `\nAlgorithme sélectionné : ${algo}`;
+    
+    // Implémentez ici la logique pour chaque algorithme
+  }
