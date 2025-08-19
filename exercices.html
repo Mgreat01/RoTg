@@ -3,149 +3,241 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exercices Graphes | Algorithmes interactifs</title>
+  <title>GraphX | Laboratoire d'Algorithmes Graphiques</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            primary: {
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
+            neon: {
+              blue: '#00a2ff',
+              purple: '#8a2be2',
+              pink: '#ff00aa',
+              green: '#00cc88'
             },
-            secondary: {
-              600: '#7c3aed',
-              700: '#6d28d9',
+            light: {
+              100: '#ffffff',
+              200: '#f8f9fa',
+              300: '#e9ecef'
             }
           },
-          boxShadow: {
-            'soft': '0 4px 14px 0 rgba(0, 0, 0, 0.08)',
-            'soft-md': '0 6px 18px 0 rgba(0, 0, 0, 0.12)',
+          fontFamily: {
+            'sans': ['"Exo 2"', 'sans-serif'],
+            'mono': ['"Space Mono"', 'monospace']
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'neon-glow': 'neon-glow 1.5s ease-in-out infinite alternate'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            'neon-glow': {
+              '0%': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px currentColor, 0 0 20px currentColor' },
+              '100%': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px currentColor, 0 0 40px currentColor' }
+            }
           }
         }
       }
     }
   </script>
   <script defer src="script.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=Space+Mono&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    .cyber-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+    }
+    .cyber-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+    .cyber-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 162, 255, 0.2);
+    }
+    .cyber-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 162, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    .cyber-btn:hover::before {
+      left: 100%;
     }
     #graphCanvas {
-      transition: box-shadow 0.3s ease;
+      background: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
-    #graphCanvas:hover {
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    .terminal-header {
+      background: linear-gradient(90deg, #8a2be2 0%, #00a2ff 100%);
     }
-    .tool-btn {
-      transition: all 0.2s ease;
+    .neon-text {
+      animation: neon-glow 1.5s ease-in-out infinite alternate;
     }
-    .tool-btn:hover {
-      transform: translateY(-1px);
+    .neon-border {
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+    }
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300a2ff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.5em;
+    }
+    .text-dark {
+      color: #212529;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col text-dark">
 
-  <!-- Navbar -->
-  <nav class="bg-primary-800 text-white px-6 py-4 shadow-md flex justify-between items-center sticky top-0 z-50">
-    <div class="flex items-center space-x-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-      <h1 class="font-bold text-xl tracking-tight">Algorithmes sur Graphes</h1>
+  <!-- Navbar futuriste -->
+  <nav class="bg-white px-8 py-4 shadow-lg border-b border-neon-blue/20 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 bg-neon-blue rounded-full flex items-center justify-center neon-border">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-purple">
+        GraphX<span class="text-neon-pink">Lab</span>
+      </h1>
     </div>
-    <a href="index.html" class="flex items-center space-x-1 hover:text-yellow-300 transition-colors duration-200">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-      <span>Accueil</span>
+    <a href="index.html" class="flex items-center space-x-2 group">
+      <span class="group-hover:text-neon-blue transition-colors duration-300">Accueil</span>
+      <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-neon-purple to-neon-pink group-hover:rotate-180 transition-transform duration-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+        </svg>
+      </div>
     </a>
   </nav>
 
   <!-- Contenu principal -->
   <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-gray-800 mb-3">Algorithmes sur Graphes</h1>
-      <p class="text-gray-600 max-w-2xl mx-auto">Visualisez et exécutez interactivement différents algorithmes de graphes. Ajoutez des sommets et des arêtes, puis lancez l'algorithme de votre choix.</p>
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-extrabold mb-4">
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink">Laboratoire</span>
+        <span class="neon-text text-neon-green">Graphique</span>
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Explorez visuellement les algorithmes de graphes dans un environnement interactif et immersif.
+      </p>
     </div>
 
-    <!-- Barre d'outils -->
-    <div class="bg-white rounded-xl shadow-soft-md p-4 mb-8">
-      <div class="flex flex-wrap gap-3 justify-center">
+    <!-- Panneau de contrôle cyberpunk -->
+    <div class="cyber-card rounded-xl p-6 mb-8 relative overflow-hidden">
+      <div class="absolute -top-10 -left-10 w-20 h-20 bg-neon-purple/10 rounded-full filter blur-xl"></div>
+      <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-neon-blue/10 rounded-full filter blur-xl"></div>
+      
+      <div class="flex flex-wrap gap-4 justify-center relative z-10">
         <button onclick="setMode('node')" 
-                class="tool-btn px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-soft flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                class="cyber-btn px-6 py-3 bg-gradient-to-br from-neon-blue to-neon-purple text-white font-bold rounded-lg flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          <span>Ajouter Sommet</span>
+          <span>Nouveau Nœud</span>
         </button>
+        
         <button onclick="setMode('edge')" 
-                class="tool-btn px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-soft flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                class="cyber-btn px-6 py-3 bg-gradient-to-br from-neon-green to-neon-blue text-white font-bold rounded-lg flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <span>Ajouter Liaison</span>
+          <span>Créer Lien</span>
         </button>
         
-        <div class="relative w-full sm:w-auto">
-          <select id="algoSelect" 
-                  class="appearance-none px-5 py-2.5 pr-10 rounded-lg border border-gray-200 shadow-soft bg-white focus:ring-2 focus:ring-primary-400 focus:border-transparent text-gray-700">
-            <option value="dijkstra">Dijkstra (PCC)</option>
-            <option value="bellman">Bellman-Ford</option>
-            <option value="floyd">Floyd-Warshall</option>
-            <option value="dfs">Parcours en profondeur (DFS)</option>
-            <option value="bfs">Parcours en largeur (BFS)</option>
-            <option value="kruskal">Kruskal (ACM)</option>
-            <option value="longest">Plus long chemin (DAG)</option>
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-          </div>
-        </div>
+        <select id="algoSelect" 
+                class="cyber-btn px-6 py-3 bg-white text-neon-blue border border-neon-blue/30 rounded-lg font-bold focus:ring-2 focus:ring-neon-blue focus:outline-none">
+          <option value="dijkstra">Dijkstra (PCC)</option>
+          <option value="bellman">Bellman-Ford</option>
+          <option value="floyd">Floyd-Warshall</option>
+          <option value="dfs">Parcours Profondeur</option>
+          <option value="bfs">Parcours Largeur</option>
+          <option value="kruskal">Kruskal (ACM)</option>
+          <option value="longest">Plus Long Chemin</option>
+        </select>
         
         <button onclick="runAlgorithm()" 
-                class="tool-btn px-5 py-2.5 bg-secondary-600 hover:bg-secondary-700 text-white rounded-lg shadow-soft flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                class="cyber-btn px-6 py-3 bg-gradient-to-br from-neon-pink to-neon-purple text-white font-bold rounded-lg flex items-center space-x-2 hover:shadow-neon-pink/50">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <span>Exécuter</span>
+          <span>Exécuter Algorithme</span>
         </button>
       </div>
     </div>
 
-    <!-- Zone de dessin du graphe -->
-    <div class="flex justify-center mb-8">
-      <canvas id="graphCanvas" width="1000" height="550" 
-              class="border border-gray-200 bg-white rounded-xl shadow-soft-md transition-all duration-300">
+    <!-- Zone de visualisation du graphe -->
+    <div class="flex justify-center mb-8 relative">
+      <div class="absolute -top-5 -left-5 w-32 h-32 bg-neon-blue/5 rounded-full filter blur-3xl"></div>
+      <div class="absolute -bottom-5 -right-5 w-40 h-40 bg-neon-purple/5 rounded-full filter blur-3xl"></div>
+      <canvas id="graphCanvas" width="1000" height="600" 
+              class="border border-gray-200 bg-white rounded-xl relative z-10 hover:border-neon-blue/50 transition-all duration-300">
         Votre navigateur ne supporte pas les canvas HTML5.
       </canvas>
     </div>
 
-    <!-- Résultats -->
-    <div class="bg-white rounded-xl shadow-soft-md overflow-hidden">
-      <div class="bg-gray-800 px-5 py-3 flex items-center">
+    <!-- Terminal de résultats -->
+    <div class="cyber-card rounded-xl overflow-hidden">
+      <div class="terminal-header px-5 py-3 flex items-center">
         <div class="flex space-x-2 mr-4">
           <div class="w-3 h-3 rounded-full bg-red-500"></div>
           <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
           <div class="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
-        <h2 class="text-lg font-medium text-gray-200">Résultats</h2>
+        <h2 class="text-lg font-bold flex items-center text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+          </svg>
+          <span>Résultats d'Exécution</span>
+        </h2>
       </div>
       <pre id="output" 
-           class="p-5 bg-gray-900 text-green-400 font-mono text-sm overflow-auto max-h-64">
+           class="p-5 bg-gray-800 text-neon-green font-mono text-sm overflow-auto max-h-64 scrolling-touch">
       </pre>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-primary-800 text-white py-4">
+  <!-- Footer futuriste -->
+  <footer class="bg-white py-6 border-t border-gray-200 mt-8">
     <div class="container mx-auto px-6 text-center">
-      <p class="text-sm">© 2025 Algorithmes sur Graphes | Conçu avec <span class="text-red-400">♥</span> pour l'apprentissage</p>
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="#" class="text-gray-500 hover:text-neon-blue transition-colors duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        </a>
+        <a href="#" class="text-gray-500 hover:text-neon-purple transition-colors duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </a>
+        <a href="#" class="text-gray-500 hover:text-neon-pink transition-colors duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </a>
+      </div>
+      <p class="text-sm text-gray-500">
+        © 2025 <span class="text-neon-blue">GraphXLab</span> | Système d'Exploration Algorithmique v2.0
+      </p>
     </div>
   </footer>
 
