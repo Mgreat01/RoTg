@@ -2,49 +2,170 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Recherche Opérationnelle & Graphes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphX Lab | Recherche Opérationnelle & Graphes</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+            },
+            secondary: {
+              500: '#8b5cf6',
+              600: '#7c3aed',
+            },
+            accent: {
+              500: '#10b981',
+              600: '#059669',
+            }
+          },
+          fontFamily: {
+            sans: ['"Exo 2"', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'neon-glow': 'neon-glow 1.5s ease-in-out infinite alternate'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            'neon-glow': {
+              '0%': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px currentColor, 0 0 20px currentColor' },
+              '100%': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px currentColor, 0 0 40px currentColor' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .hero-title {
+      background: linear-gradient(90deg, #2563eb 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #8b5cf6;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .action-btn {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .action-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen flex flex-col">
 
-  <!-- Navbar -->
-  <nav class="bg-blue-700 text-white px-6 py-4 shadow-lg sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <h1 class="font-extrabold text-2xl tracking-wide">📘 Cours & Exercices</h1>
-      <div class="space-x-6 text-lg">
-        <a href="index.html" class="hover:text-yellow-300 transition">Accueil</a>
-        <a href="cours.html" class="hover:text-yellow-300 transition">Cours</a>
-        <a href="exercices.html" class="hover:text-yellow-300 transition">Exercices</a>
+  <!-- Navbar améliorée -->
+  <nav class="bg-white px-8 py-4 shadow-md sticky top-0 z-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-lg flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-500">
+          GraphX Lab
+        </h1>
+      </div>
+      <div class="hidden md:flex space-x-8">
+        <a href="index.html" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Accueil</a>
+        <a href="cours.html" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Cours</a>
+        <a href="exercices.html" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Exercices</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="flex-1 flex flex-col justify-center items-center text-center py-20 px-6">
-    <h2 class="text-4xl md:text-5xl font-extrabold text-blue-800 mb-6 animate-pulse">
-      Bienvenue 👋
-    </h2>
-    <p class="text-lg md:text-xl max-w-2xl mx-auto text-gray-700 leading-relaxed">
-      Explorez les notions de <span class="font-semibold text-blue-700">Recherche Opérationnelle</span> 
-      et de <span class="font-semibold text-green-700">Théorie des Graphes</span> 
-      à travers des cours clairs et des exercices interactifs ✨.
-    </p>
+  <!-- Hero Section améliorée -->
+  <section class="flex-1 flex flex-col justify-center items-center text-center py-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-8 animate-float">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </div>
+      
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-6 hero-title">
+        Recherche Opérationnelle & Théorie des Graphes
+      </h2>
+      
+      <p class="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
+        Maîtrisez les concepts fondamentaux et les algorithmes clés à travers des cours structurés et des exercices interactifs conçus pour l'apprentissage moderne.
+      </p>
 
-    <div class="mt-10 flex gap-6 flex-wrap justify-center">
-      <a href="cours.html" 
-         class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl shadow-lg text-lg font-medium transition transform hover:scale-105">
-        📖 Cours
-      </a>
-      <a href="exercices.html" 
-         class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl shadow-lg text-lg font-medium transition transform hover:scale-105">
-        🧩 Exercices
-      </a>
+      <div class="mt-12 flex gap-6 flex-wrap justify-center">
+        <a href="cours.html" 
+           class="action-btn bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <span>Explorer les Cours</span>
+        </a>
+        <a href="exercices.html" 
+           class="action-btn bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <span>Pratiquer les Exercices</span>
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="bg-blue-800 text-white text-center py-4 mt-auto">
-    <p class="text-sm">© 2025 - Recherche Opérationnelle & Graphes. Tous droits réservés.</p>
+  <!-- Footer amélioré -->
+  <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+      <div class="flex items-center space-x-2 mb-4 md:mb-0">
+        <div class="w-6 h-6 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-md"></div>
+        <span class="font-bold text-gray-700">GraphX Lab</span>
+      </div>
+      <div class="flex space-x-6">
+        <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        </a>
+        <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </a>
+        <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </a>
+      </div>
+      <p class="text-sm text-gray-500 mt-4 md:mt-0">
+        © 2025 GraphX Lab. Tous droits réservés.
+      </p>
+    </div>
   </footer>
 
 </body>
