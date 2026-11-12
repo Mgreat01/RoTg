@@ -1,213 +1,105 @@
-// Script JS pour les algorithmes de graphes
+﻿// Adaptateur d'interface : les calculs sont centralisés dans js/graphe.js.
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
-
+const output = document.getElementById("output");
+const directionSelect = document.getElementById("directionSelect");
 let nodes = [];
 let edges = [];
-let mode = "node"; // "node" or "edge"
+let mode = "node";
 let selectedNode = null;
+let result = null;
 
-function setMode(m) {
-  mode = m;
+function setMode(value) {
+  mode = value;
   selectedNode = null;
+  drawGraph();
 }
-
-// --- Dessin du graphe ---
+function invalidate() {
+  result = null;
+  output.textContent = "Graphe modifié : relancez un calcul.";
+}
 function drawGraph() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Arêtes
-  ctx.strokeStyle = "black";
   ctx.font = "14px Arial";
-  edges.forEach(e => {
+  edges.forEach((edge, index) => {
+    const from = edge.from, to = edge.to;
+    const path = result?.kind === "path" ? result.path : [];
+    const highlighted = result?.edges?.includes(index) || path.some((id, i) => i < path.length - 1 &&
+      ((id === from.id && path[i + 1] === to.id) ||
+       (directionSelect.value === "undirected" && id === to.id && path[i + 1] === from.id)));
+    ctx.strokeStyle = highlighted ? "#c026d3" : "#334155";
+    ctx.fillStyle = ctx.strokeStyle;
     ctx.beginPath();
-    ctx.moveTo(e.from.x, e.from.y);
-    ctx.lineTo(e.to.x, e.to.y);
+    if (from.id === to.id) {
+      ctx.arc(from.x, from.y - 26, 18, 0, Math.PI * 2);
+    } else {
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+    }
     ctx.stroke();
-    const midX = (e.from.x + e.to.x) / 2;
-    const midY = (e.from.y + e.to.y) / 2;
-    ctx.fillText(e.weight, midX, midY);
+    if (directionSelect.value === "directed" && from.id !== to.id) {
+      const angle = Math.atan2(to.y - from.y, to.x - from.x);
+      const x = to.x - 21 * Math.cos(angle), y = to.y - 21 * Math.sin(angle);
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.lineTo(x - 11 * Math.cos(angle - 0.45), y - 11 * Math.sin(angle - 0.45));
+      ctx.lineTo(x - 11 * Math.cos(angle + 0.45), y - 11 * Math.sin(angle + 0.45));
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.fillText(String(edge.weight), (from.x + to.x) / 2 + 5,
+      from.id === to.id ? from.y - 48 : (from.y + to.y) / 2 - 6);
   });
-
-  // Sommets
-  nodes.forEach(n => {
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, 20, 0, Math.PI * 2);
-    ctx.fillStyle = "lightblue";
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "black";
-    ctx.fillText(n.id, n.x - 5, n.y + 5);
+  nodes.forEach(node => {
+    ctx.beginPath(); ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+    ctx.fillStyle = result?.path?.includes(node.id) || result?.order?.includes(node.id) ? "#f5d0fe" : "#dbeafe";
+    ctx.fill(); ctx.strokeStyle = selectedNode === node ? "#c026d3" : "#334155";
+    ctx.stroke(); ctx.fillStyle = "#0f172a";
+    ctx.fillText(String(node.id), node.x - 5, node.y + 5);
   });
 }
-
-canvas.addEventListener("click", e => {
+canvas.addEventListener("click", event => {
   const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
+  const x = (event.clientX - rect.left) * canvas.width / rect.width;
+  const y = (event.clientY - rect.top) * canvas.height / rect.height;
   if (mode === "node") {
+    if (nodes.length >= 500) { output.textContent = "Limite de 500 sommets atteinte."; return; }
     nodes.push({ id: nodes.length + 1, x, y });
-  } else if (mode === "edge") {
-    const clicked = nodes.find(n => Math.hypot(n.x - x, n.y - y) < 20);
-    if (clicked) {
-      if (!selectedNode) {
-        selectedNode = clicked;
-      } else {
-        const weight = parseInt(prompt("Poids de l'arête :", "1"));
-        edges.push({ from: selectedNode, to: clicked, weight });
-        selectedNode = null;
+    invalidate();
+  } else {
+    const clicked = nodes.find(node => Math.hypot(node.x - x, node.y - y) < 20);
+    if (!clicked) return;
+    if (!selectedNode) selectedNode = clicked;
+    else {
+      const source = selectedNode;
+      selectedNode = null;
+      const input = prompt("Poids de l'arête (nombre fini) :", "1");
+      if (input !== null) {
+        const weight = input.trim() === "" ? NaN : Number(input.trim().replace(",", "."));
+        if (!Number.isFinite(weight)) output.textContent = "Poids invalide : saisissez un nombre fini.";
+        else if (edges.length >= 10000) output.textContent = "Limite de 10 000 arêtes atteinte.";
+        else { edges.push({ from: source, to: clicked, weight }); invalidate(); }
       }
     }
   }
   drawGraph();
 });
-
-// --- Algorithmes ---
 function runAlgorithm() {
-  const algo = document.getElementById("algoSelect").value;
-  let result = "";
-
-  switch (algo) {
-    case "dijkstra":
-      result = "Résultat Dijkstra: " + JSON.stringify(dijkstra(0));
-      break;
-    case "bellman":
-      result = "Résultat Bellman-Ford: " + JSON.stringify(bellmanFord(0));
-      break;
-    case "floyd":
-      result = "Résultat Floyd-Warshall: " + JSON.stringify(floydWarshall());
-      break;
-    case "dfs":
-      result = "DFS: " + JSON.stringify(dfs(0));
-      break;
-    case "bfs":
-      result = "BFS: " + JSON.stringify(bfs(0));
-      break;
-    case "kruskal":
-      result = "Arbre couvrant (Kruskal): " + JSON.stringify(kruskal());
-      break;
-    case "longest":
-      result = "Plus long chemin (DAG): " + JSON.stringify(longestPath());
-      break;
-  }
-
-  document.getElementById("output").innerText = result;
-}
-
-// --- Implémentations simples ---
-function dijkstra(start) {
-  let dist = Array(nodes.length).fill(Infinity);
-  dist[start] = 0;
-  let visited = new Set();
-
-  while (visited.size < nodes.length) {
-    let u = -1;
-    let minDist = Infinity;
-    dist.forEach((d, i) => {
-      if (!visited.has(i) && d < minDist) {
-        minDist = d;
-        u = i;
-      }
-    });
-
-    if (u === -1) break;
-    visited.add(u);
-
-    edges.forEach(e => {
-      if (e.from.id - 1 === u) {
-        const v = e.to.id - 1;
-        if (dist[u] + e.weight < dist[v]) {
-          dist[v] = dist[u] + e.weight;
-        }
-      }
-    });
-  }
-  return dist;
-}
-
-function bellmanFord(start) {
-  let dist = Array(nodes.length).fill(Infinity);
-  dist[start] = 0;
-  for (let i = 0; i < nodes.length - 1; i++) {
-    edges.forEach(e => {
-      let u = e.from.id - 1;
-      let v = e.to.id - 1;
-      if (dist[u] + e.weight < dist[v]) {
-        dist[v] = dist[u] + e.weight;
-      }
-    });
-  }
-  return dist;
-}
-
-function floydWarshall() {
-  let dist = Array.from({ length: nodes.length }, () => Array(nodes.length).fill(Infinity));
-  nodes.forEach((_, i) => dist[i][i] = 0);
-  edges.forEach(e => dist[e.from.id - 1][e.to.id - 1] = e.weight);
-
-  for (let k = 0; k < nodes.length; k++) {
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = 0; j < nodes.length; j++) {
-        if (dist[i][k] + dist[k][j] < dist[i][j]) {
-          dist[i][j] = dist[i][k] + dist[k][j];
-        }
-      }
-    }
-  }
-  return dist;
-}
-
-function dfs(start) {
-  let visited = [];
-  function visit(u) {
-    visited.push(u + 1);
-    edges.forEach(e => {
-      if (e.from.id - 1 === u && !visited.includes(e.to.id)) {
-        visit(e.to.id - 1);
-      }
-    });
-  }
-  visit(start);
-  return visited;
-}
-
-function bfs(start) {
-  let visited = [];
-  let queue = [start];
-  while (queue.length) {
-    let u = queue.shift();
-    if (!visited.includes(u + 1)) {
-      visited.push(u + 1);
-      edges.forEach(e => {
-        if (e.from.id - 1 === u) {
-          queue.push(e.to.id - 1);
-        }
-      });
-    }
-  }
-  return visited;
-}
-
-function kruskal() {
-  let parent = Array.from({ length: nodes.length }, (_, i) => i);
-  function find(x) { return parent[x] === x ? x : parent[x] = find(parent[x]); }
-  function union(a, b) { parent[find(a)] = find(b); }
-
-  let sortedEdges = [...edges].sort((a, b) => a.weight - b.weight);
-  let mst = [];
-  sortedEdges.forEach(e => {
-    let u = e.from.id - 1, v = e.to.id - 1;
-    if (find(u) !== find(v)) {
-      mst.push(e);
-      union(u, v);
-    }
-  });
-  return mst;
-}
-
-function longestPath() {
-  // Simplification: fonctionne seulement pour DAG
-  return "Algorithme du plus long chemin pour DAG (non implémenté totalement)";
+  const algorithm = document.getElementById("algoSelect").value;
+  result = GraphEngine.run({
+    nodes,
+    edges: edges.map(edge => ({ source: edge.from.id, destination: edge.to.id, weight: edge.weight })),
+    directed: directionSelect.value === "directed",
+  }, algorithm);
+  const lines = [result.message];
+  if (result.code) lines.push(`Code : ${result.code}`);
+  if (result.path.length) lines.push(`Chemin : ${result.path.join(" → ")} ; coût : ${result.distance}`);
+  if (result.kind === "traversal") lines.push(`Ordre de visite : ${result.order.join(", ")}`);
+  if (result.kind === "forest") lines.push(`Poids total : ${result.totalWeight} ; composantes : ${result.components}`);
+  if (result.distances) lines.push("Distances depuis la source :", ...Object.entries(result.distances).map(([id, d]) => `  ${id} : ${d ?? "inaccessible"}`));
+  if (result.matrix) lines.push(`Matrice (ordre : ${result.nodeIds.join(", ")}) :`, ...result.matrix.map(row => row.map(d => d ?? "∞").join("\t")));
+  if (result.unreachable?.length) lines.push(`Sommets inaccessibles : ${result.unreachable.join(", ")}`);
+  if (result.complexity) lines.push(`Temps : ${result.complexity.time} ; espace : ${result.complexity.space}`);
+  output.textContent = lines.join("\n");
+  drawGraph();
 }
 document.getElementById("runButton").addEventListener("click", runAlgorithm);
+directionSelect.addEventListener("change", () => { selectedNode = null; invalidate(); drawGraph(); });
