@@ -1,0 +1,1728 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-11-12",
+  "title": "Bibliothèque GraphX Lab",
+  "editorial": "Leçons et exemples originaux en français. Les ressources externes sont proposées pour approfondir ; leurs textes, figures et vidéos ne sont pas recopiés ni embarqués.",
+  "sources": [
+    {
+      "id": "lille-graphes",
+      "title": "Université de Lille — UE Graphes, supports et TD",
+      "url": "https://portail.fil.univ-lille.fr/portail/index.php?dipl=L&sem=S5&ue=Graphes",
+      "language": "Français"
+    },
+    {
+      "id": "mit-bfs",
+      "title": "MIT OpenCourseWare — BFS et représentations",
+      "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/6afd7e9a85d7d36e204533569f9fccf6_MIT6_006S20_r09.pdf",
+      "language": "Anglais"
+    },
+    {
+      "id": "mit-dfs",
+      "title": "MIT — Breadth First Search and Depth First Search",
+      "url": "https://courses.csail.mit.edu/6.006/spring11/rec/rec12.pdf",
+      "language": "Anglais"
+    },
+    {
+      "id": "mit-chemins",
+      "title": "MIT OpenCourseWare — Bellman-Ford et plus courts chemins",
+      "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/1a34924a2ee4e08c580c2268f8e854ee_MIT6_006S20_r12.pdf",
+      "language": "Anglais"
+    },
+    {
+      "id": "princeton-arbres",
+      "title": "Princeton — Minimum Spanning Trees",
+      "url": "https://algs4.cs.princeton.edu/43mst/",
+      "language": "Anglais"
+    },
+    {
+      "id": "lille-coloration",
+      "title": "Université de Lille — Coloration, cours de J.-S. Varré",
+      "url": "https://www.fil.univ-lille.fr/~varre/portail/graphes/cours/cours-6-book-etu.pdf",
+      "language": "Français"
+    },
+    {
+      "id": "lille-flots",
+      "title": "Université de Lille — Flots, cours de J.-S. Varré",
+      "url": "https://www.fil.univ-lille.fr/~varre/portail/graphes/cours/cours-5-book-etu.pdf",
+      "language": "Français"
+    },
+    {
+      "id": "iowa-ro",
+      "title": "University of Iowa — Operations Research, cours de D. Bricker",
+      "url": "https://user.engineering.uiowa.edu/~dbricker/or_lectures.html",
+      "language": "Anglais"
+    },
+    {
+      "id": "iowa-transport",
+      "title": "University of Iowa — Supports Transport et Affectation",
+      "url": "https://user.engineering.uiowa.edu/~dbricker/or_lectures.html",
+      "language": "Anglais"
+    },
+    {
+      "id": "iowa-affectation",
+      "title": "University of Iowa — Assignment Problem, D. Bricker",
+      "url": "https://user.engineering.uiowa.edu/~dbricker/Stacks_pdf8/Assignment.pdf",
+      "language": "Anglais"
+    },
+    {
+      "id": "iowa-cpm",
+      "title": "University of Iowa — Project Networks, CPM et PERT",
+      "url": "https://user.engineering.uiowa.edu/~dbricker/or_lectures.html",
+      "language": "Anglais"
+    },
+    {
+      "id": "iowa-pert",
+      "title": "University of Iowa — PERT, D. Bricker",
+      "url": "https://user.engineering.uiowa.edu/~dbricker/Stacks_pdf8/PERT.pdf",
+      "language": "Anglais"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "recherche-operationnelle",
+      "title": "Fondamentaux de la recherche opérationnelle",
+      "category": "Recherche opérationnelle",
+      "level": "Débutant",
+      "minutes": 18,
+      "summary": "Transformer une décision concrète en variables, contraintes et objectif mesurable.",
+      "objectives": [
+        "Distinguer solution réalisable et solution optimale.",
+        "Identifier les hypothèses et les unités d’un modèle."
+      ],
+      "prerequisites": "Calcul numérique élémentaire et lecture d’inégalités.",
+      "definition": "La recherche opérationnelle construit et analyse des modèles pour comparer des décisions sous contraintes. Une solution optimale est la meilleure parmi les solutions réalisables du modèle ; sa pertinence dépend aussi de la fidélité des hypothèses au problème réel.",
+      "sections": [
+        {
+          "title": "Construire le modèle",
+          "paragraphs": [
+            "Commencez par définir ce qui est décidé : quantité produite, affectation d’une personne ou itinéraire choisi. Distinguez ces variables des données imposées : budgets, demandes et durées. Une contrainte exprime une obligation ; l’objectif exprime ce que l’on cherche à améliorer.",
+            "Les unités permettent de repérer des erreurs : un coût unitaire en euros par objet multiplié par une quantité donne des euros. Après résolution, vérifiez les contraintes, les arrondis et l’effet d’une variation des données."
+          ]
+        },
+        {
+          "title": "Choisir une méthode",
+          "paragraphs": [
+            "Un réseau de routes peut se modéliser par un graphe ; des ressources divisibles peuvent conduire à un programme linéaire. Une variable comptant des personnes exige une contrainte d’intégralité : arrondir une solution continue ne garantit ni faisabilité ni optimalité."
+          ]
+        }
+      ],
+      "formulas": [
+        "Optimiser f(x), sous gᵢ(x) ≤ bᵢ et x ∈ D.",
+        "Réalisable : toutes les contraintes sont satisfaites. Optimal : aucun réalisable n’améliore l’objectif."
+      ],
+      "example": {
+        "statement": "Livrer un colis de 1 à 3 : trajets 1→2 à 2 €, 2→3 à 3 € et 1→3 à 10 €.",
+        "steps": [
+          "Les sommets représentent les lieux ; les arcs représentent les trajets autorisés.",
+          "Comparer le trajet direct à 10 € au trajet via 2, de coût 2 + 3 = 5 €."
+        ],
+        "answer": "Le trajet 1→2→3 coûte 5 €. Il est optimal dans ce petit réseau, pas nécessairement dans un réseau dont des trajets auraient été omis."
+      },
+      "pseudocode": "Définir les décisions et les données\nÉcrire les contraintes et l’objectif\nChoisir une méthode adaptée\nRésoudre, vérifier, puis interpréter la solution",
+      "complexity": "La complexité dépend du problème et de la méthode. Il n’existe pas de borne unique valable pour toute la recherche opérationnelle.",
+      "exercise": {
+        "prompt": "Un atelier dispose de 12 heures. Un objet demande 3 heures et rapporte 7 €. Écrire le modèle et trouver la quantité optimale.",
+        "hints": [
+          "La quantité est un entier positif ou nul.",
+          "Traduire le temps disponible par 3x ≤ 12."
+        ],
+        "solution": [
+          "Maximiser 7x sous 3x ≤ 12 et x entier ≥ 0.",
+          "Les quantités possibles sont 0 à 4. Comme le gain augmente avec x, choisir x = 4 : gain 28 €."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Une solution optimale peut-elle violer une contrainte du modèle ?",
+          "options": [
+            "Oui, si le gain est élevé.",
+            "Non, elle doit d’abord être réalisable.",
+            "Seulement si la variable est entière."
+          ],
+          "correctIndex": 1,
+          "hint": "L’optimisation compare seulement les solutions admissibles.",
+          "explanation": "Une solution hors de l’ensemble réalisable n’est pas une solution admissible, quel que soit son gain."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Construisez le réseau de livraison ci-dessus.",
+          "Lancez Dijkstra et interprétez la distance en euros."
+        ],
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 3,
+              "x": 72,
+              "y": 145
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 2
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 3
+            },
+            {
+              "source": 1,
+              "destination": 3,
+              "weight": 10
+            }
+          ]
+        },
+        "algorithm": "dijkstra",
+        "expected": {
+          "distance": 5,
+          "path": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "sourceIds": [
+        "iowa-ro"
+      ]
+    },
+    {
+      "id": "programmation-lineaire",
+      "title": "Programmation linéaire : modèle et méthode graphique",
+      "category": "Recherche opérationnelle",
+      "level": "Débutant",
+      "minutes": 25,
+      "summary": "Tracer un domaine réalisable et comparer ses sommets, sans confondre continu et entier.",
+      "objectives": [
+        "Formuler un programme linéaire à deux variables.",
+        "Reconnaître les cas infaisable et non borné."
+      ],
+      "prerequisites": "Inégalités, équations de droites ; chapitre sur la modélisation.",
+      "definition": "Un programme linéaire optimise une fonction linéaire sous des contraintes linéaires. Dans un modèle continu, les variables peuvent prendre des valeurs fractionnaires. L’ajout de contraintes d’intégralité change la classe du problème.",
+      "sections": [
+        {
+          "title": "Lire le domaine réalisable",
+          "paragraphs": [
+            "En dimension deux, une inégalité définit un demi-plan. Leur intersection avec x ≥ 0 et y ≥ 0 forme le domaine réalisable. Une droite de niveau de l’objectif regroupe les points donnant la même valeur.",
+            "Sur un domaine réalisable non vide et borné, il existe un optimum en un sommet ; plusieurs sommets ou tout un segment peuvent être optimaux. Un domaine vide signifie que les exigences sont incompatibles. Un objectif non borné peut être amélioré sans limite dans le modèle."
+          ]
+        },
+        {
+          "title": "Au-delà du dessin",
+          "paragraphs": [
+            "Le simplexe passe entre solutions de base ; il ne possède pas de garantie polynomiale générale dans le pire cas. Des méthodes de points intérieurs existent. La lecture graphique explique les concepts mais ne remplace pas un solveur pour de nombreuses variables."
+          ]
+        }
+      ],
+      "formulas": [
+        "Maximiser z = 3x + 2y.",
+        "2x + y ≤ 8 ; x + y ≤ 5 ; x ≥ 0 ; y ≥ 0."
+      ],
+      "example": {
+        "statement": "Résoudre le programme linéaire ci-dessus.",
+        "steps": [
+          "Les sommets réalisables sont (0,0), (4,0), (3,2) et (0,5).",
+          "L’intersection des deux contraintes actives donne x = 3 et y = 2.",
+          "Les objectifs valent respectivement 0, 12, 13 et 10."
+        ],
+        "answer": "L’optimum est (3,2), de valeur 13. La comparaison de tous les sommets établit l’optimalité dans ce domaine borné."
+      },
+      "table": {
+        "columns": [
+          "x",
+          "y",
+          "3x + 2y"
+        ],
+        "rows": [
+          [
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "4",
+            "0",
+            "12"
+          ],
+          [
+            "3",
+            "2",
+            "13"
+          ],
+          [
+            "0",
+            "5",
+            "10"
+          ]
+        ]
+      },
+      "pseudocode": "Tracer les frontières des contraintes\nConserver les intersections réalisables\nVérifier que le domaine est non vide et borné\nÉvaluer l’objectif à chaque sommet\nComparer les valeurs et vérifier les contraintes",
+      "complexity": "L’énumération graphique convient ici à deux variables. En dimension variable, énumérer tous les sommets peut être exponentiel ; ne pas généraliser cette méthode en algorithme efficace universel.",
+      "exercise": {
+        "prompt": "Maximiser x + y sous x ≤ 2, y ≤ 3 et x,y ≥ 0. Existe-t-il plusieurs optima ?",
+        "hints": [
+          "Le domaine est un rectangle.",
+          "Les deux coefficients de l’objectif sont strictement positifs."
+        ],
+        "solution": [
+          "Le point (2,3) est réalisable et donne 5.",
+          "Toute diminution de x ou y réduit l’objectif ; cet optimum est unique."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "L’arrondi d’une solution continue est-il toujours une solution entière optimale ?",
+          "options": [
+            "Oui.",
+            "Non : il peut violer les contraintes ou perdre l’optimalité.",
+            "Oui, pour toute minimisation."
+          ],
+          "correctIndex": 1,
+          "hint": "Pensez à une contrainte qui impose une capacité exacte.",
+          "explanation": "L’intégralité doit être traitée dans le modèle et dans la résolution ; un arrondi arbitraire n’est pas une méthode correcte."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Sur papier, tracez 2x + y = 8 et x + y = 5.",
+          "Hachurez les demi-plans puis vérifiez les quatre sommets du tableau. Cette activité ne nécessite pas de solveur dans le laboratoire."
+        ]
+      },
+      "sourceIds": [
+        "iowa-ro"
+      ]
+    },
+    {
+      "id": "introduction-graphes",
+      "title": "Introduction à la théorie des graphes",
+      "category": "Théorie des graphes",
+      "level": "Débutant",
+      "minutes": 20,
+      "summary": "Sommets, arêtes, arcs, degrés, chemins et familles de graphes.",
+      "objectives": [
+        "Choisir entre graphe orienté et non orienté.",
+        "Distinguer graphe simple, multigraphe et graphe pondéré."
+      ],
+      "prerequisites": "Ensembles finis et comptage.",
+      "definition": "Un graphe décrit des objets, appelés sommets, et des relations. Une arête non orientée relie deux sommets sans ordre ; un arc possède une source et une destination. Une pondération associe une valeur à chaque connexion.",
+      "sections": [
+        {
+          "title": "Conventions à expliciter",
+          "paragraphs": [
+            "Un graphe simple non orienté ne contient ni boucle ni arêtes parallèles. Un multigraphe autorise plusieurs connexions entre les mêmes sommets. Une boucle revient à son propre sommet. Un poids peut représenter une durée ou un coût : il ne détermine pas à lui seul le sens de la connexion.",
+            "Dans ce cours, un chemin élémentaire ne répète pas de sommet. Un cycle revient à son point de départ sans répéter les autres sommets. Les conventions peuvent varier entre ouvrages ; annoncez toujours celles de votre exercice."
+          ]
+        },
+        {
+          "title": "Compter correctement",
+          "paragraphs": [
+            "Dans un graphe non orienté, une boucle compte deux fois dans le degré. Dans un graphe orienté, elle contribue une fois au degré entrant et une fois au degré sortant. Un sommet isolé n’a aucune connexion ; un sommet pendant a degré 1 en non orienté."
+          ]
+        }
+      ],
+      "formulas": [
+        "G = (V,E) ; n = |V| ; m = |E|.",
+        "Non orienté : Σ deg(v) = 2m.",
+        "Orienté : Σ deg⁺(v) = Σ deg⁻(v) = m.",
+        "Graphe complet simple non orienté : m = n(n−1)/2."
+      ],
+      "example": {
+        "statement": "Trois lieux sont reliés deux à deux par des routes à double sens.",
+        "steps": [
+          "Créer V = {1,2,3} et E = {{1,2},{2,3},{1,3}}.",
+          "Chaque sommet a degré 2 ; la somme des degrés vaut 6."
+        ],
+        "answer": "Il y a trois arêtes : 2m = 6. Ce graphe est le triangle K₃."
+      },
+      "pseudocode": "Pour chaque sommet v : degré[v] ← 0\nPour chaque arête {u,v} :\n  degré[u] ← degré[u] + 1\n  degré[v] ← degré[v] + 1",
+      "complexity": "Compter les degrés à partir d’une liste d’arêtes prend O(V + E) en temps et O(V) de mémoire auxiliaire.",
+      "exercise": {
+        "prompt": "Un graphe simple non orienté complet possède quatre sommets. Combien a-t-il d’arêtes et quel est le degré de chaque sommet ?",
+        "hints": [
+          "Chaque sommet est relié aux trois autres.",
+          "Chaque arête est comptée deux fois dans la somme des degrés."
+        ],
+        "solution": [
+          "Les quatre degrés valent 3 : somme 12.",
+          "Le nombre d’arêtes est 12/2 = 6, également 4×3/2."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Dans un graphe non orienté, combien une boucle ajoute-t-elle au degré de son sommet ?",
+          "options": [
+            "0",
+            "1",
+            "2"
+          ],
+          "correctIndex": 2,
+          "hint": "Une boucle possède deux extrémités incidentes au même sommet.",
+          "explanation": "Elle ajoute 2 au degré. Cette convention conserve l’identité Σ deg(v) = 2m."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Construisez le triangle non orienté.",
+          "Passez en mode orienté et observez que le dessin représente désormais trois arcs, pas six."
+        ],
+        "graph": {
+          "directed": false,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 3,
+              "x": 72,
+              "y": 145
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 1
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 1
+            },
+            {
+              "source": 3,
+              "destination": 1,
+              "weight": 1
+            }
+          ]
+        }
+      },
+      "sourceIds": [
+        "lille-graphes"
+      ]
+    },
+    {
+      "id": "representations",
+      "title": "Représenter un graphe : listes et matrices",
+      "category": "Théorie des graphes",
+      "level": "Débutant",
+      "minutes": 22,
+      "summary": "Passer d’un dessin à une liste d’adjacence, une matrice d’adjacence et une matrice d’incidence.",
+      "objectives": [
+        "Fixer un ordre de sommets et d’arêtes.",
+        "Ne pas confondre absence d’arête et poids nul."
+      ],
+      "prerequisites": "Vocabulaire des graphes et tableaux à deux dimensions.",
+      "definition": "Une représentation encode un même graphe dans une structure de données. Elle doit conserver les identifiants et les conventions d’orientation ; l’ordre des lignes et colonnes doit être indiqué pour rendre une matrice interprétable.",
+      "sections": [
+        {
+          "title": "Adjacence",
+          "paragraphs": [
+            "Dans un graphe simple, Aᵢⱼ vaut 1 si i est relié à j, sinon 0. Pour un graphe orienté, la ligne i décrit les arcs sortants de i. En non orienté, la matrice est symétrique. Dans un multigraphe, on peut compter les connexions, mais cette convention doit être annoncée.",
+            "Une matrice de coûts est différente : un poids nul reste une connexion. Pour les plus courts chemins, on représente généralement l’absence d’arc par +∞, puis on initialise la distance d’un sommet à lui-même à zéro."
+          ]
+        },
+        {
+          "title": "Incidence et listes",
+          "paragraphs": [
+            "La matrice d’incidence orientée possède une colonne par arc : −1 à la source et +1 à la destination. Une boucle donne une colonne nulle selon cette convention signée ; elle doit donc être conservée dans la liste d’arêtes. La liste d’adjacence stocke directement les voisins sortants, avec les poids si nécessaire."
+          ]
+        }
+      ],
+      "formulas": [
+        "A = [[0,1,1],[0,0,1],[0,0,0]].",
+        "B = [[−1,0,−1],[1,−1,0],[0,1,1]] pour les colonnes (1→2, 2→3, 1→3)."
+      ],
+      "example": {
+        "statement": "Arcs 1→2, 2→3 et 1→3, dans l’ordre des sommets 1,2,3.",
+        "steps": [
+          "La liste de 1 est [2,3], celle de 2 est [3], celle de 3 est vide.",
+          "Les trois coefficients non nuls de A sont A₁₂, A₁₃ et A₂₃.",
+          "Chaque colonne de B a une somme nulle."
+        ],
+        "answer": "La représentation doit respecter le sens des arcs ; A₂₁ reste nul même si A₁₂ vaut 1."
+      },
+      "table": {
+        "columns": [
+          "Sommet",
+          "Successeurs"
+        ],
+        "rows": [
+          [
+            "1",
+            "2, 3"
+          ],
+          [
+            "2",
+            "3"
+          ],
+          [
+            "3",
+            "aucun"
+          ]
+        ]
+      },
+      "pseudocode": "Initialiser une liste vide pour chaque sommet\nPour chaque arc (u,v,w) : ajouter (v,w) à Adj[u]\nSi le graphe est non orienté : ajouter aussi (u,w) à Adj[v]",
+      "complexity": "Matrice d’adjacence : O(V²) en mémoire. Liste d’adjacence : O(V + E). Tester une connexion dans une matrice prend O(1), parcourir les voisins avec une liste prend O(degré sortant).",
+      "exercise": {
+        "prompt": "Ajouter l’arc 3→1. Quelles entrées de la matrice d’adjacence et de la liste changent ?",
+        "hints": [
+          "La source détermine la ligne.",
+          "Une seule liste de successeurs change."
+        ],
+        "solution": [
+          "A₃₁ passe de 0 à 1.",
+          "La liste de 3 devient [1]. Les autres lignes et listes restent inchangées."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Que signifie 0 dans une matrice de coûts si les poids nuls sont permis ?",
+          "options": [
+            "Toujours une absence d’arête.",
+            "Un poids nul, si l’entrée représente une connexion.",
+            "Un cycle négatif."
+          ],
+          "correctIndex": 1,
+          "hint": "Une route gratuite peut exister.",
+          "explanation": "L’absence doit être distinguée du coût nul, par exemple avec +∞ ou une valeur absente explicitement documentée."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Dessinez les trois arcs du cours.",
+          "Écrivez la matrice d’adjacence sur papier ; comparez-la à la matrice des distances de Floyd-Warshall pour repérer leurs différences."
+        ],
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 3,
+              "x": 72,
+              "y": 145
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 2
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 3
+            },
+            {
+              "source": 1,
+              "destination": 3,
+              "weight": 10
+            }
+          ]
+        },
+        "algorithm": "floyd",
+        "expected": {
+          "distance": 5,
+          "path": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "sourceIds": [
+        "mit-bfs",
+        "lille-graphes"
+      ]
+    },
+    {
+      "id": "bfs-dfs",
+      "title": "Parcourir un graphe : BFS et DFS",
+      "category": "Théorie des graphes",
+      "level": "Débutant",
+      "minutes": 25,
+      "summary": "Explorer en largeur ou en profondeur et interpréter correctement l’ordre des visites.",
+      "objectives": [
+        "Dérouler une file BFS et une pile DFS.",
+        "Reconstruire un chemin avec des prédécesseurs plutôt qu’avec l’ordre de visite."
+      ],
+      "prerequisites": "Listes d’adjacence, files et piles.",
+      "definition": "Un parcours visite les sommets atteignables depuis une source. BFS explore par couches de distance en nombre d’arêtes ; DFS termine l’exploration d’une branche avant de revenir aux choix en attente.",
+      "sections": [
+        {
+          "title": "BFS et son invariant",
+          "paragraphs": [
+            "BFS utilise une file FIFO. On marque un sommet dès son insertion pour éviter de l’ajouter plusieurs fois. Les sommets sont découverts par distance croissante en nombre d’arêtes : c’est utile pour les plus courts chemins non pondérés, mais pas pour minimiser des poids quelconques."
+          ]
+        },
+        {
+          "title": "DFS et les limites de l’ordre de visite",
+          "paragraphs": [
+            "DFS utilise une pile, explicitement ou à travers les appels récursifs. L’ordre dépend de celui des voisins. Pour visiter tout un graphe déconnecté, on relance un parcours depuis chaque sommet non visité.",
+            "Deux sommets successifs dans une liste de visites ne sont pas forcément adjacents. Les prédécesseurs de découverte forment un arbre de parcours et permettent de remonter un vrai chemin vers la source."
+          ]
+        }
+      ],
+      "formulas": [
+        "BFS non pondéré : distance[v] = distance[parent[v]] + 1 lors de la découverte.",
+        "Sommet non découvert à la fin : inaccessible depuis cette source."
+      ],
+      "example": {
+        "statement": "Arcs 1→2, 1→3 et 2→4, avec voisins examinés dans cet ordre.",
+        "steps": [
+          "BFS visite 1, puis 2 et 3, puis 4.",
+          "DFS visite 1,2,4, puis revient à 1 avant de découvrir 3."
+        ],
+        "answer": "BFS : [1,2,3,4]. DFS : [1,2,4,3]. La séquence BFS n’est pas un chemin car il n’existe pas d’arc 2→3."
+      },
+      "pseudocode": "Marquer s ; file ← [s] ; distance[s] ← 0\nTant que la file n’est pas vide :\n  u ← retirer en tête\n  Pour chaque voisin v non marqué de u :\n    marquer v ; parent[v] ← u\n    distance[v] ← distance[u] + 1 ; ajouter v en queue",
+      "complexity": "Avec listes d’adjacence, BFS et DFS prennent O(V + E) en temps et O(V) de mémoire auxiliaire, hors stockage du graphe.",
+      "exercise": {
+        "prompt": "Ajouter 3→4 au graphe. BFS depuis 1 peut-il donner un autre prédécesseur à 4 si l’ordre des voisins change ?",
+        "hints": [
+          "4 peut être découvert depuis 2 ou depuis 3.",
+          "Sa distance en nombre d’arêtes reste 2."
+        ],
+        "solution": [
+          "Oui : si 3 est traité avant 2, 4 peut avoir 3 comme prédécesseur.",
+          "Les deux chemins ont deux arêtes ; un plus court chemin n’est pas forcément unique."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "BFS minimise-t-il la somme des poids de toutes les arêtes ?",
+          "options": [
+            "Toujours.",
+            "Seulement si tous les poids sont négatifs.",
+            "Non ; il minimise le nombre d’arêtes dans le cas non pondéré."
+          ],
+          "correctIndex": 2,
+          "hint": "La file classe les découvertes par couches, pas par coût.",
+          "explanation": "Avec des poids différents, un trajet de peu d’arêtes peut coûter plus cher. Utilisez un algorithme de plus court chemin pondéré adapté."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Exécutez BFS puis DFS sur l’exemple.",
+          "Expliquez pourquoi les deux ordres diffèrent sans qu’aucun soit incorrect."
+        ],
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 305,
+              "y": 110
+            },
+            {
+              "id": 3,
+              "x": 180,
+              "y": 180
+            },
+            {
+              "id": 4,
+              "x": 55,
+              "y": 110
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 1
+            },
+            {
+              "source": 1,
+              "destination": 3,
+              "weight": 1
+            },
+            {
+              "source": 2,
+              "destination": 4,
+              "weight": 1
+            }
+          ]
+        },
+        "algorithm": "bfs",
+        "expected": {
+          "order": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      },
+      "sourceIds": [
+        "mit-bfs",
+        "mit-dfs"
+      ]
+    },
+    {
+      "id": "plus-courts-chemins",
+      "title": "Plus courts chemins : choisir le bon algorithme",
+      "category": "Théorie des graphes",
+      "level": "Intermédiaire",
+      "minutes": 30,
+      "summary": "Comprendre le relâchement, les poids négatifs et les distances inaccessibles.",
+      "objectives": [
+        "Choisir Dijkstra, Bellman-Ford ou Floyd-Warshall.",
+        "Expliquer pourquoi un cycle négatif peut empêcher une distance finie."
+      ],
+      "prerequisites": "Parcours, pondérations et listes d’adjacence.",
+      "definition": "Un plus court chemin minimise la somme des poids entre une source et une destination. Un sommet inaccessible n’a pas de chemin depuis la source ; une distance non définie à cause d’un cycle négatif est une situation différente.",
+      "sections": [
+        {
+          "title": "Le relâchement",
+          "paragraphs": [
+            "On conserve une meilleure distance connue d[v]. Un arc u→v améliore cette estimation si d[u] + w(u,v) < d[v]. Le prédécesseur de v devient alors u. L’initialisation donne 0 à la source et +∞ aux autres sommets."
+          ]
+        },
+        {
+          "title": "Trois méthodes, trois contextes",
+          "paragraphs": [
+            "Dijkstra choisit le sommet non fixé de plus petite distance ; il exige des poids positifs ou nuls. Bellman-Ford relâche les arcs jusqu’à V−1 passes, puis cherche encore une amélioration pour détecter un cycle négatif atteignable.",
+            "Floyd-Warshall autorise progressivement chaque sommet comme intermédiaire et calcule toutes les paires. Une diagonale négative signale un cycle négatif. Pour une paire donnée, une distance peut décroître sans borne si un cycle négatif est atteignable depuis la source et permet ensuite d’atteindre la destination. Le laboratoire signale les cycles selon ses préconditions avant de rendre un chemin."
+          ]
+        }
+      ],
+      "formulas": [
+        "d[v] ← min(d[v], d[u] + w(u,v)).",
+        "Floyd : Dᵏ[i,j] = min(Dᵏ⁻¹[i,j], Dᵏ⁻¹[i,k] + Dᵏ⁻¹[k,j])."
+      ],
+      "example": {
+        "statement": "Arcs 1→2 de poids 2, 2→3 de poids 3 et 1→3 de poids 10.",
+        "steps": [
+          "Depuis 1, les premières estimations sont d[2] = 2 et d[3] = 10.",
+          "Le passage par 2 améliore d[3] à 2 + 3 = 5.",
+          "Les prédécesseurs permettent de remonter 3←2←1."
+        ],
+        "answer": "Chemin 1→2→3, coût 5. Ajouter un sommet isolé ne lui donne pas une distance nulle : il reste inaccessible."
+      },
+      "pseudocode": "d[s] ← 0 ; autres distances ← +∞\nRépéter au plus V−1 fois :\n  Pour chaque arc (u,v,w), si d[u] est finie :\n    si d[u] + w < d[v], actualiser d[v] et parent[v]\nSi une amélioration reste possible : signaler un cycle négatif atteignable",
+      "complexity": "Dans le laboratoire : Dijkstra O(V² + E), Bellman-Ford O(V×E), Floyd-Warshall O(V³). La mémoire auxiliaire est O(V) pour les deux premiers et O(V²) pour Floyd, hors graphe.",
+      "exercise": {
+        "prompt": "Remplacer le poids 2→3 par −4. Quelle est la distance de 1 à 3, et faut-il utiliser Dijkstra ?",
+        "hints": [
+          "Le graphe reste acyclique.",
+          "Comparez le trajet via 2 au trajet direct."
+        ],
+        "solution": [
+          "Le trajet via 2 coûte 2−4 = −2, meilleur que 10.",
+          "Dijkstra doit être refusé. Bellman-Ford convient ; aucun cycle négatif n’est présent."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Quel poids Dijkstra accepte-t-il ?",
+          "options": [
+            "Un poids nul.",
+            "Tout poids négatif.",
+            "Seulement les poids strictement positifs."
+          ],
+          "correctIndex": 0,
+          "hint": "La condition est « non négatif ».",
+          "explanation": "Zéro est autorisé. Ce sont les poids négatifs qui invalident la garantie de Dijkstra."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Comparez Dijkstra, Bellman-Ford et Floyd sur l’exemple.",
+          "Dans un nouveau graphe, ajoutez 2→3 à −2 et 3→2 à 1 : Bellman-Ford doit signaler le cycle négatif si 2 est atteignable."
+        ],
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 3,
+              "x": 72,
+              "y": 145
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 2
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 3
+            },
+            {
+              "source": 1,
+              "destination": 3,
+              "weight": 10
+            }
+          ]
+        },
+        "algorithm": "dijkstra",
+        "expected": {
+          "distance": 5,
+          "path": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "sourceIds": [
+        "mit-chemins",
+        "lille-graphes"
+      ]
+    },
+    {
+      "id": "arbres-couvrants",
+      "title": "Arbres et forêts couvrantes minimales",
+      "category": "Théorie des graphes",
+      "level": "Intermédiaire",
+      "minutes": 25,
+      "summary": "Relier tous les sommets au moindre coût avec Kruskal ou Prim.",
+      "objectives": [
+        "Distinguer arbre couvrant et plus court chemin.",
+        "Interpréter un résultat sur un graphe déconnecté."
+      ],
+      "prerequisites": "Cycles, connexité non orientée et poids.",
+      "definition": "Un arbre est un graphe non orienté connexe et sans cycle. Un arbre couvrant conserve tous les sommets d’un graphe connexe. S’il est pondéré, on cherche celui dont la somme des poids est minimale.",
+      "sections": [
+        {
+          "title": "Kruskal",
+          "paragraphs": [
+            "Trier les arêtes par poids croissant, puis accepter celles qui relient deux composantes distinctes. Une structure d’ensembles disjoints permet de tester cette condition. Une boucle ne relie pas deux composantes ; elle est donc ignorée. Les poids négatifs sont permis.",
+            "Si le graphe n’est pas connexe, aucun arbre ne peut couvrir tout le graphe en restant connexe : on obtient une forêt couvrante minimale, un arbre par composante."
+          ]
+        },
+        {
+          "title": "Prim et le bon objectif",
+          "paragraphs": [
+            "Prim fait croître un arbre depuis un sommet en choisissant une arête de coût minimal franchissant la coupe entre sommets déjà inclus et sommets restants. Minimiser la somme des arêtes de l’arbre ne garantit pas des trajets les plus courts depuis une source. Ne confondez pas ce problème avec Dijkstra."
+          ]
+        }
+      ],
+      "formulas": [
+        "Arbre à n sommets : m = n−1.",
+        "Forêt à n sommets et c composantes : m = n−c.",
+        "Coût d’un arbre T : Σₑ∈T w(e)."
+      ],
+      "example": {
+        "statement": "Arêtes 1—2 : 1, 2—3 : 2, 1—3 : 5 et 3—4 : 1.",
+        "steps": [
+          "Kruskal accepte 1—2 et 3—4, toutes deux de poids 1.",
+          "L’arête 2—3 de poids 2 relie les deux composantes.",
+          "L’arête 1—3 de poids 5 formerait un cycle."
+        ],
+        "answer": "L’arbre couvre les quatre sommets avec trois arêtes et un coût total 4."
+      },
+      "pseudocode": "T ← ensemble vide ; chaque sommet forme sa composante\nPour chaque arête (u,v) par poids croissant :\n  si composante(u) ≠ composante(v) :\n    ajouter (u,v) à T ; fusionner les composantes\nRetourner T, éventuellement une forêt",
+      "complexity": "Kruskal est dominé par le tri O(E log E), avec un terme d’initialisation O(V) et des unions/recherches. Une version de Prim avec tas binaire prend O((V+E) log V).",
+      "exercise": {
+        "prompt": "Ajouter un cinquième sommet isolé à l’exemple. Quel coût et combien de composantes la forêt minimale possède-t-elle ?",
+        "hints": [
+          "Aucune arête ne peut joindre le sommet isolé.",
+          "La forêt conserve l’arbre précédent."
+        ],
+        "solution": [
+          "Le coût reste 4 et il y a deux composantes.",
+          "Le nombre d’arêtes est 5−2 = 3 ; parler d’un arbre couvrant connexe serait incorrect."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Kruskal nécessite ici un graphe…",
+          "options": [
+            "orienté uniquement.",
+            "non orienté.",
+            "sans poids négatif."
+          ],
+          "correctIndex": 1,
+          "hint": "Une arête relie deux composantes sans sens de parcours.",
+          "explanation": "Le problème d’arbre couvrant minimal traité par Kruskal est non orienté ; les poids négatifs restent autorisés."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Ouvrez l’exemple non orienté et lancez Kruskal.",
+          "Ajoutez un sommet isolé, relancez et observez le passage d’un arbre à une forêt."
+        ],
+        "graph": {
+          "directed": false,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 305,
+              "y": 110
+            },
+            {
+              "id": 3,
+              "x": 180,
+              "y": 180
+            },
+            {
+              "id": 4,
+              "x": 55,
+              "y": 110
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 1
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 2
+            },
+            {
+              "source": 1,
+              "destination": 3,
+              "weight": 5
+            },
+            {
+              "source": 3,
+              "destination": 4,
+              "weight": 1
+            }
+          ]
+        },
+        "algorithm": "kruskal",
+        "expected": {
+          "totalWeight": 4,
+          "components": 1
+        }
+      },
+      "sourceIds": [
+        "princeton-arbres"
+      ]
+    },
+    {
+      "id": "connexite",
+      "title": "Connexité, ponts et points d’articulation",
+      "category": "Théorie des graphes",
+      "level": "Intermédiaire",
+      "minutes": 25,
+      "summary": "Comprendre les composantes et repérer les connexions fragiles.",
+      "objectives": [
+        "Distinguer connexité faible et forte.",
+        "Définir un pont et un point d’articulation sans se fier au dessin."
+      ],
+      "prerequisites": "Parcours et graphes orientés/non orientés.",
+      "definition": "Une composante connexe d’un graphe non orienté est un ensemble maximal de sommets reliés entre eux par des chemins. Dans un graphe orienté, une composante fortement connexe exige un chemin dans les deux sens entre toute paire de ses sommets.",
+      "sections": [
+        {
+          "title": "Faible et forte connexité",
+          "paragraphs": [
+            "Ignorer l’orientation permet d’étudier la connexité faible. Cela ne garantit pas les retours : un arc 1→2 rend les deux sommets faiblement connectés, mais pas fortement connectés. Les algorithmes de Tarjan ou Kosaraju déterminent les composantes fortement connexes."
+          ]
+        },
+        {
+          "title": "Fragilité du réseau",
+          "paragraphs": [
+            "Un pont est une arête dont la suppression augmente le nombre de composantes connexes. Un point d’articulation est un sommet dont la suppression, avec ses arêtes incidentes, augmente ce nombre. Ces définitions s’appliquent ici au graphe non orienté.",
+            "Un arbre à au moins deux sommets n’offre aucun itinéraire alternatif pour ses arêtes : chacune est un pont. Une arête d’un cycle n’est pas un pont. Dans un multigraphe, deux arêtes parallèles peuvent offrir une alternative ; un test qui ignore leur identité peut donc se tromper."
+          ]
+        }
+      ],
+      "formulas": [
+        "Densité simple non orientée, n ≥ 2 : 2m / (n(n−1)).",
+        "Densité simple orientée sans boucles, n ≥ 2 : m / (n(n−1))."
+      ],
+      "example": {
+        "statement": "Triangle 1—2—3—1, arête 3—4 et sommet 5 isolé.",
+        "steps": [
+          "Les composantes sont {1,2,3,4} et {5}.",
+          "Supprimer 3—4 isole 4 et porte le nombre de composantes à trois.",
+          "Supprimer le sommet 3 laisse {1,2}, {4} et {5}."
+        ],
+        "answer": "3—4 est un pont ; 3 est un point d’articulation. Le triangle permet de supprimer l’une de ses arêtes sans le déconnecter."
+      },
+      "pseudocode": "Marquer tous les sommets comme non visités\nPour chaque sommet v non visité :\n  créer une nouvelle composante\n  explorer depuis v par BFS ou DFS\n  rattacher les sommets découverts à cette composante",
+      "complexity": "Les composantes et les tests optimisés de ponts/articulations par DFS prennent O(V+E). Refaire un parcours après chaque suppression est correct mais beaucoup plus coûteux.",
+      "exercise": {
+        "prompt": "Dans un chemin non orienté 1—2—3—4, identifier les ponts et points d’articulation.",
+        "hints": [
+          "Retirez une connexion à la fois.",
+          "Retirer une extrémité ne coupe pas les sommets restants en deux groupes."
+        ],
+        "solution": [
+          "Les trois arêtes sont des ponts.",
+          "Les sommets 2 et 3 sont des points d’articulation ; 1 et 4 ne le sont pas."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "L’arc unique 1→2 rend-il le graphe fortement connexe ?",
+          "options": [
+            "Oui.",
+            "Non, car 2 ne peut pas atteindre 1.",
+            "Oui, parce qu’il n’y a pas de cycle."
+          ],
+          "correctIndex": 1,
+          "hint": "Vérifiez les deux sens de chaque paire.",
+          "explanation": "La forte connexité requiert aussi un trajet de 2 vers 1, absent ici."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Construisez l’exemple et exécutez BFS depuis 1.",
+          "Le sommet 5 doit rester inaccessible. Les ponts et articulations sont à analyser manuellement dans cette activité."
+        ],
+        "graph": {
+          "directed": false,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 299,
+              "y": 88
+            },
+            {
+              "id": 3,
+              "x": 253,
+              "y": 167
+            },
+            {
+              "id": 4,
+              "x": 107,
+              "y": 167
+            },
+            {
+              "id": 5,
+              "x": 61,
+              "y": 88
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 1
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 1
+            },
+            {
+              "source": 3,
+              "destination": 1,
+              "weight": 1
+            },
+            {
+              "source": 3,
+              "destination": 4,
+              "weight": 1
+            }
+          ]
+        },
+        "algorithm": "bfs",
+        "expected": {
+          "order": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      },
+      "sourceIds": [
+        "mit-dfs",
+        "lille-graphes"
+      ]
+    },
+    {
+      "id": "coloration",
+      "title": "Coloration et graphes bipartis",
+      "category": "Théorie des graphes",
+      "level": "Intermédiaire",
+      "minutes": 22,
+      "summary": "Attribuer des ressources incompatibles et distinguer une bonne coloration d’une coloration optimale.",
+      "objectives": [
+        "Produire une coloration propre.",
+        "Reconnaître le rôle des cycles impairs pour la bipartition."
+      ],
+      "prerequisites": "Graphes simples non orientés et cycles.",
+      "definition": "Une coloration propre des sommets attribue une couleur à chaque sommet de sorte que les extrémités de toute arête aient des couleurs différentes. Le nombre chromatique χ(G) est le minimum de couleurs nécessaire.",
+      "sections": [
+        {
+          "title": "Modéliser les incompatibilités",
+          "paragraphs": [
+            "Pour des examens, créez un sommet par épreuve et une arête lorsque deux épreuves partagent au moins un étudiant. Une couleur représente un créneau. Une coloration propre évite les conflits, mais elle ne prend pas automatiquement en compte le nombre de salles ou leurs capacités.",
+            "L’algorithme glouton donne à chaque sommet la première couleur absente de ses voisins déjà colorés. Son résultat dépend de l’ordre des sommets et n’est pas garanti optimal. Pour un graphe simple, Δ+1 couleurs suffisent par cette règle, avec Δ le degré maximal."
+          ]
+        },
+        {
+          "title": "Deux couleurs",
+          "paragraphs": [
+            "Un graphe non orienté sans boucle est biparti si ses sommets se partagent en deux ensembles sans arête interne. Il est biparti si et seulement s’il ne contient pas de cycle impair. Un BFS peut alterner deux couleurs ; une arête entre deux sommets de même couleur révèle un conflit.",
+            "Avec au moins une arête, un graphe biparti nécessite exactement deux couleurs. Une boucle rend toute coloration propre impossible."
+          ]
+        }
+      ],
+      "formulas": [
+        "Pour chaque arête {u,v} : couleur[u] ≠ couleur[v].",
+        "G simple : χ(G) ≤ Δ + 1."
+      ],
+      "example": {
+        "statement": "Trois examens sont incompatibles deux à deux.",
+        "steps": [
+          "Le graphe est un triangle.",
+          "Les deux premiers examens utilisent deux créneaux différents.",
+          "Le troisième est adjacent aux deux autres et doit utiliser un troisième créneau."
+        ],
+        "answer": "χ(K₃) = 3. Ajouter une contrainte de capacité de salle demanderait un modèle supplémentaire."
+      },
+      "pseudocode": "Choisir un ordre des sommets\nPour chaque sommet u :\n  relever les couleurs des voisins déjà colorés\n  attribuer la plus petite couleur non interdite",
+      "complexity": "La bipartition par BFS prend O(V+E). Une coloration gloutonne peut se réaliser en O(V+E) avec marquage adapté. Trouver le nombre chromatique exact est NP-difficile en général ; le glouton n’est pas une preuve d’optimalité.",
+      "exercise": {
+        "prompt": "Colorier le cycle 1—2—3—4—1 avec le minimum de couleurs. Que change l’ajout de 1—3 ?",
+        "hints": [
+          "Le cycle initial est pair.",
+          "L’arête ajoutée crée un triangle."
+        ],
+        "solution": [
+          "Deux couleurs suffisent initialement : {1,3} puis {2,4}.",
+          "Après ajout de 1—3, trois couleurs sont nécessaires et suffisantes."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Une coloration gloutonne utilisant quatre couleurs prouve-t-elle que χ(G)=4 ?",
+          "options": [
+            "Oui.",
+            "Non, une coloration avec moins de couleurs peut exister.",
+            "Seulement si le graphe est orienté."
+          ],
+          "correctIndex": 1,
+          "hint": "Un algorithme glouton peut faire un mauvais choix d’ordre.",
+          "explanation": "Elle prouve seulement χ(G) ≤ 4. Pour l’égalité, il faut aussi démontrer qu’au moins quatre couleurs sont nécessaires."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Construisez le triangle et attribuez trois couleurs sur papier.",
+          "Le laboratoire sert ici à représenter les incompatibilités ; il ne calcule pas encore une coloration."
+        ],
+        "graph": {
+          "directed": false,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 3,
+              "x": 72,
+              "y": 145
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 1
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 1
+            },
+            {
+              "source": 3,
+              "destination": 1,
+              "weight": 1
+            }
+          ]
+        }
+      },
+      "sourceIds": [
+        "lille-coloration"
+      ]
+    },
+    {
+      "id": "flots",
+      "title": "Flots, réseau résiduel et coupe minimale",
+      "category": "Théorie des graphes",
+      "level": "Intermédiaire",
+      "minutes": 30,
+      "summary": "Faire circuler une quantité sous contraintes de capacité et prouver qu’elle est maximale.",
+      "objectives": [
+        "Vérifier capacité et conservation.",
+        "Comprendre pourquoi les arcs résiduels inverses sont indispensables."
+      ],
+      "prerequisites": "Graphes orientés et chemins.",
+      "definition": "Un flot transporte une quantité d’une source s vers un puits t. Sur chaque arc, le flot reste compris entre zéro et la capacité ; à tout sommet intermédiaire, la quantité entrante égale la quantité sortante.",
+      "sections": [
+        {
+          "title": "Augmenter et corriger un flot",
+          "paragraphs": [
+            "Une capacité résiduelle indique ce qui peut encore être envoyé. Un arc inverse résiduel permet d’annuler une partie d’un envoi précédent pour réaffecter le flot : il ne représente pas nécessairement une conduite physique supplémentaire.",
+            "Ford-Fulkerson augmente le flot le long de chemins résiduels. Avec des capacités entières, chaque augmentation accroît la valeur d’au moins une unité. Edmonds-Karp choisit ces chemins par BFS et possède une borne polynomiale indépendante de la valeur des capacités."
+          ]
+        },
+        {
+          "title": "La coupe comme certificat",
+          "paragraphs": [
+            "Une coupe sépare les sommets en S et T, avec s dans S et t dans T. Sa capacité est la somme des capacités des arcs allant de S vers T. Tout flot est inférieur ou égal à cette capacité. Le théorème flot maximum/coupe minimale garantit l’égalité aux optimums."
+          ]
+        }
+      ],
+      "formulas": [
+        "0 ≤ f(u,v) ≤ c(u,v).",
+        "Pour v ≠ s,t : Σᵤ f(u,v) = Σw f(v,w).",
+        "Valeur du flot = sorties de s − entrées dans s."
+      ],
+      "example": {
+        "statement": "Capacités : s→a = 3, a→t = 2 et s→t = 1.",
+        "steps": [
+          "Envoyer 2 unités par s→a→t et 1 directement de s à t.",
+          "La valeur vaut 3 et les contraintes sont respectées.",
+          "La coupe S={s,a}, T={t} a capacité 2+1 = 3."
+        ],
+        "answer": "Le flot vaut 3 et ne peut dépasser une coupe de capacité 3 : son optimalité est prouvée."
+      },
+      "pseudocode": "Initialiser tous les flots à 0\nTant qu’un chemin s→t existe dans le réseau résiduel :\n  δ ← plus petite capacité résiduelle sur le chemin\n  augmenter les arcs directs et diminuer les arcs inverses de δ\nRetourner le flot et la coupe résiduelle finale",
+      "complexity": "Edmonds-Karp prend O(V×E²) en temps et O(V+E) en mémoire avec listes. Ford-Fulkerson dépend du choix des chemins et des capacités ; ne pas lui attribuer cette même borne sans préciser la variante.",
+      "exercise": {
+        "prompt": "Porter la capacité a→t à 5 sans changer les deux autres arcs. Quel est le flot maximal ?",
+        "hints": [
+          "La source peut envoyer au plus 3+1 unités.",
+          "Cherchez un flot qui atteint cette borne."
+        ],
+        "solution": [
+          "Envoyer 3 via a et 1 directement : valeur 4.",
+          "La coupe S={s} a capacité 4 : le flot est maximal."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Pourquoi ajouter un arc résiduel inverse ?",
+          "options": [
+            "Pour doubler toutes les capacités.",
+            "Pour pouvoir réaffecter un flot déjà envoyé.",
+            "Pour supprimer la conservation."
+          ],
+          "correctIndex": 1,
+          "hint": "Un premier choix d’itinéraire peut devoir être corrigé.",
+          "explanation": "L’arc inverse représente la possibilité d’annuler une partie du flot sur l’arc initial et de la rediriger."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Dessinez le réseau avec les poids interprétés comme capacités.",
+          "Vérifiez manuellement le flot et la coupe décrits. Le moteur de flot n’est pas encore disponible ; Dijkstra ne résout pas ce problème."
+        ],
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 3,
+              "x": 72,
+              "y": 145
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 3
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 2
+            },
+            {
+              "source": 1,
+              "destination": 3,
+              "weight": 1
+            }
+          ]
+        }
+      },
+      "sourceIds": [
+        "lille-flots"
+      ]
+    },
+    {
+      "id": "transport",
+      "title": "Le problème de transport",
+      "category": "Recherche opérationnelle",
+      "level": "Intermédiaire",
+      "minutes": 28,
+      "summary": "Répartir des quantités entre origines et destinations en minimisant le coût total.",
+      "objectives": [
+        "Écrire les contraintes d’offre et de demande.",
+        "Distinguer une solution initiale d’une solution optimale."
+      ],
+      "prerequisites": "Modélisation linéaire et sommes.",
+      "definition": "Le problème de transport choisit les quantités xᵢⱼ expédiées d’une origine i vers une destination j. Dans le modèle équilibré, toutes les offres et toutes les demandes sont satisfaites exactement.",
+      "sections": [
+        {
+          "title": "Équilibrer le modèle",
+          "paragraphs": [
+            "Le total des offres doit égaler celui des demandes pour les contraintes d’égalité du modèle équilibré. Une origine ou destination fictive peut représenter un manque ou un surplus, mais son coût doit exprimer la réalité économique : un coût nul n’est pas toujours justifié.",
+            "Les coûts unitaires sont multipliés par les quantités. Une route interdite doit être interdite dans le modèle, pas seulement rendue coûteuse sans justification."
+          ]
+        },
+        {
+          "title": "Initialiser puis améliorer",
+          "paragraphs": [
+            "La méthode du coin nord-ouest construit une solution réalisable sans utiliser les coûts ; elle n’est donc pas une garantie d’optimalité. Vogel et la méthode du coût minimum visent une meilleure initialisation. Une méthode d’optimisation doit ensuite vérifier les coûts réduits et améliorer la solution si nécessaire.",
+            "Avec offres et demandes entières, le modèle classique sans contraintes additionnelles possède une solution optimale entière lorsqu’il est réalisable. Des contraintes supplémentaires peuvent faire perdre cette propriété."
+          ]
+        }
+      ],
+      "formulas": [
+        "Minimiser ΣᵢΣⱼ cᵢⱼ xᵢⱼ.",
+        "Pour toute origine i : Σⱼ xᵢⱼ = aᵢ.",
+        "Pour toute destination j : Σᵢ xᵢⱼ = bⱼ ; xᵢⱼ ≥ 0."
+      ],
+      "example": {
+        "statement": "Offres (3,2), demandes (2,3), coûts [[1,4],[3,2]].",
+        "steps": [
+          "Poser x₁₁=t ; les égalités imposent x₁₂=3−t, x₂₁=2−t et x₂₂=t.",
+          "La non-négativité donne 0≤t≤2.",
+          "Le coût devient 18−4t et décroît lorsque t augmente."
+        ],
+        "answer": "t=2 donne [[2,1],[0,2]], de coût 10. Ici l’optimalité est démontrée par l’expression du coût, pas seulement par une allocation plausible."
+      },
+      "table": {
+        "columns": [
+          "Origine",
+          "D1 (demande 2)",
+          "D2 (demande 3)",
+          "Offre"
+        ],
+        "rows": [
+          [
+            "O1",
+            "coût 1",
+            "coût 4",
+            "3"
+          ],
+          [
+            "O2",
+            "coût 3",
+            "coût 2",
+            "2"
+          ]
+        ]
+      },
+      "pseudocode": "Vérifier l’équilibre offres/demandes\nConstruire une allocation réalisable\nCalculer son coût total\nChercher une amélioration admissible\nArrêter seulement avec un critère d’optimalité",
+      "complexity": "Le modèle possède p×q variables pour p origines et q destinations. Le coût de résolution dépend de la méthode choisie ; une initialisation rapide n’est pas une résolution optimale garantie.",
+      "exercise": {
+        "prompt": "Pour l’exemple, calculer le coût du plan [[1,2],[1,1]] et vérifier sa faisabilité.",
+        "hints": [
+          "Vérifiez les sommes de chaque ligne et colonne.",
+          "Additionnez coût unitaire × quantité sur les quatre routes."
+        ],
+        "solution": [
+          "Lignes : 3 et 2 ; colonnes : 2 et 3. Le plan est réalisable.",
+          "Coût = 1+8+3+2 = 14. Il est moins bon que le plan optimal de coût 10."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Le coin nord-ouest garantit-il le coût minimal ?",
+          "options": [
+            "Oui, toujours.",
+            "Non, il fournit d’abord une solution réalisable.",
+            "Seulement lorsque tous les coûts diffèrent."
+          ],
+          "correctIndex": 1,
+          "hint": "Cette méthode consulte-t-elle les coûts ?",
+          "explanation": "Une méthode qui ignore les coûts peut construire un plan réalisable très cher ; une vérification d’optimalité reste nécessaire."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Reconstituez le tableau et les quatre contraintes sur papier.",
+          "Essayez t=0, t=1 et t=2 ; comparez les coûts 18, 14 et 10. Aucun solveur de transport n’est simulé dans cette activité."
+        ]
+      },
+      "sourceIds": [
+        "iowa-transport"
+      ]
+    },
+    {
+      "id": "affectation",
+      "title": "Le problème d’affectation",
+      "category": "Recherche opérationnelle",
+      "level": "Intermédiaire",
+      "minutes": 25,
+      "summary": "Affecter une tâche à chaque personne sans réutiliser une tâche.",
+      "objectives": [
+        "Formuler des variables binaires d’affectation.",
+        "Prouver l’optimalité d’un petit exemple par énumération."
+      ],
+      "prerequisites": "Matrices de coûts et modélisation linéaire.",
+      "definition": "Une affectation bijective associe exactement une tâche à chaque personne et exactement une personne à chaque tâche. La version de coût minimal cherche la permutation des tâches minimisant la somme des coûts associés.",
+      "sections": [
+        {
+          "title": "Les décisions sont couplées",
+          "paragraphs": [
+            "Choisir indépendamment le minimum de chaque ligne peut affecter la même tâche à plusieurs personnes. Les contraintes de colonnes empêchent ce conflit. Un problème rectangulaire peut être complété par des tâches ou personnes fictives, avec des coûts qui correspondent aux décisions non affectées.",
+            "L’algorithme hongrois exploite la structure particulière de l’affectation pour résoudre le problème en temps polynomial. Soustraire une constante à une ligne ou à une colonne modifie toutes les affectations complètes du même montant et préserve donc leur classement."
+          ]
+        },
+        {
+          "title": "Ce que le modèle ne dit pas",
+          "paragraphs": [
+            "Une contrainte de compétences doit exclure les couples interdits. Si une personne peut effectuer plusieurs tâches, on quitte le modèle bijectif simple. Le modèle classique peut se voir comme un transport où chaque offre et chaque demande valent 1."
+          ]
+        }
+      ],
+      "formulas": [
+        "xᵢⱼ ∈ {0,1} ; minimiser ΣᵢΣⱼ cᵢⱼxᵢⱼ.",
+        "Σⱼ xᵢⱼ = 1 pour chaque personne ; Σᵢ xᵢⱼ = 1 pour chaque tâche."
+      ],
+      "example": {
+        "statement": "Coûts des personnes A,B,C pour les tâches 1,2,3 : [[4,1,3],[2,0,5],[3,2,2]].",
+        "steps": [
+          "A→2, B→1, C→3 donne 1+2+2 = 5.",
+          "Les six permutations donnent les coûts 6,11,5,9,7,6.",
+          "Le minimum de chaque ligne donnerait A→2 et B→2, ce qui viole l’unicité de la tâche 2."
+        ],
+        "answer": "L’affectation A→2, B→1, C→3 est optimale de coût 5 ; l’énumération des six possibilités le prouve pour cette petite instance."
+      },
+      "table": {
+        "columns": [
+          "Personne",
+          "Tâche 1",
+          "Tâche 2",
+          "Tâche 3"
+        ],
+        "rows": [
+          [
+            "A",
+            "4",
+            "1",
+            "3"
+          ],
+          [
+            "B",
+            "2",
+            "0",
+            "5"
+          ],
+          [
+            "C",
+            "3",
+            "2",
+            "2"
+          ]
+        ]
+      },
+      "pseudocode": "Pour chaque permutation π des n tâches :\n  vérifier que chaque couple (i,π(i)) est autorisé\n  calculer Σᵢ coût[i,π(i)]\nConserver la permutation réalisable de coût minimal\nRéserver cette énumération aux très petites instances",
+      "complexity": "L’énumération prend O(n!×n), donc devient vite impraticable. Une implémentation classique de l’algorithme hongrois prend O(n³) pour une matrice carrée.",
+      "exercise": {
+        "prompt": "Deux personnes ont les coûts [[1,2],[2,100]]. Pourquoi choisir le minimum de la première ligne peut-il être mauvais ?",
+        "hints": [
+          "Il existe seulement deux affectations complètes.",
+          "Comparez 1+100 et 2+2."
+        ],
+        "solution": [
+          "Choisir la première tâche pour la première personne impose un coût total 101.",
+          "L’affectation croisée coûte 4 et est optimale. Un choix local peut donc être très mauvais."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Combien d’affectations bijectives complètes existe-t-il pour trois personnes et trois tâches, sans interdiction ?",
+          "options": [
+            "3",
+            "6",
+            "9"
+          ],
+          "correctIndex": 1,
+          "hint": "Les tâches doivent toutes être différentes.",
+          "explanation": "Il y a 3×2×1 = 3! = 6 permutations, et non neuf choix indépendants."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Listez les six permutations de (1,2,3).",
+          "Calculez leurs coûts avec la matrice du cours. L’activité est manuelle ; aucun bouton ne prétend exécuter l’algorithme hongrois."
+        ]
+      },
+      "sourceIds": [
+        "iowa-affectation"
+      ]
+    },
+    {
+      "id": "pert-cpm",
+      "title": "Ordonnancement : CPM, PERT et chemin critique",
+      "category": "Recherche opérationnelle",
+      "level": "Intermédiaire",
+      "minutes": 30,
+      "summary": "Calculer les dates et marges d’un projet, puis distinguer durées certaines et incertaines.",
+      "objectives": [
+        "Calculer les dates au plus tôt et au plus tard.",
+        "Interpréter le chemin critique et les limites de l’approximation PERT."
+      ],
+      "prerequisites": "DAG, ordre topologique et durées.",
+      "definition": "CPM planifie des tâches de durées déterministes soumises à des précédences. Dans une représentation tâches-sur-sommets, chaque sommet porte une durée et les arcs imposent des dépendances. Le chemin critique détermine la durée minimale du projet sous ces seules contraintes, sans ressources limitées supplémentaires.",
+      "sections": [
+        {
+          "title": "Passages en avant et en arrière",
+          "paragraphs": [
+            "Le début au plus tôt d’une tâche est le maximum des fins au plus tôt de ses prédécesseurs. Après avoir fixé la fin du projet, un passage inverse calcule les dates au plus tard. La marge totale mesure le retard possible sans repousser cette fin.",
+            "Une tâche de marge totale nulle est critique. Plusieurs chemins critiques peuvent exister. Un cycle de précédence doit être refusé : aucune des tâches d’un tel cycle ne peut commencer dans ce modèle."
+          ]
+        },
+        {
+          "title": "PERT et incertitude",
+          "paragraphs": [
+            "PERT utilise des estimations optimiste a, la plus probable m et pessimiste b. Les formules classiques donnent une moyenne et une variance approchées. Additionner les variances suppose notamment l’indépendance des durées ; la durée du projet est le maximum des durées des chemins.",
+            "Remplacer toutes les durées par leurs moyennes et sélectionner un seul chemin ne donne pas en général l’espérance exacte ni une probabilité exacte de fin du projet."
+          ]
+        }
+      ],
+      "formulas": [
+        "ESᵢ = max EF des prédécesseurs ; EFᵢ = ESᵢ + dᵢ.",
+        "LFᵢ = min LS des successeurs ; LSᵢ = LFᵢ − dᵢ ; margeᵢ = LSᵢ − ESᵢ.",
+        "PERT classique : μ = (a + 4m + b)/6 ; σ² = ((b−a)/6)²."
+      ],
+      "example": {
+        "statement": "A dure 3 ; B dure 2 après A ; C dure 4 après A ; D dure 2 après B et C.",
+        "steps": [
+          "Au plus tôt : A 0–3 ; B 3–5 ; C 3–7 ; D 7–9.",
+          "Au plus tard : D 7–9 ; B 5–7 ; C 3–7 ; A 0–3.",
+          "Les marges sont A=0, B=2, C=0 et D=0."
+        ],
+        "answer": "Durée minimale 9, chemin critique A→C→D. Pour une tâche PERT avec (a,m,b)=(2,5,8), μ=5 et σ²=1."
+      },
+      "table": {
+        "columns": [
+          "Tâche",
+          "ES",
+          "EF",
+          "LS",
+          "LF",
+          "Marge"
+        ],
+        "rows": [
+          [
+            "A",
+            "0",
+            "3",
+            "0",
+            "3",
+            "0"
+          ],
+          [
+            "B",
+            "3",
+            "5",
+            "5",
+            "7",
+            "2"
+          ],
+          [
+            "C",
+            "3",
+            "7",
+            "3",
+            "7",
+            "0"
+          ],
+          [
+            "D",
+            "7",
+            "9",
+            "7",
+            "9",
+            "0"
+          ]
+        ]
+      },
+      "pseudocode": "Vérifier que les précédences forment un DAG\nDans l’ordre topologique : calculer ES puis EF\nFixer la fin du projet au maximum des EF\nDans l’ordre inverse : calculer LF puis LS\nCalculer les marges et relever les chemins critiques",
+      "complexity": "Les deux passages et le tri topologique prennent O(V+E). Ils supposent le modèle de précédence sans contrainte supplémentaire de disponibilité de ressources.",
+      "exercise": {
+        "prompt": "Porter la durée B de 2 à 3, sans autre changement. Le projet finit-il plus tard ?",
+        "hints": [
+          "B avait une marge de 2.",
+          "Comparez la nouvelle fin de B à la fin de C."
+        ],
+        "solution": [
+          "B finit à 6 et C finit toujours à 7.",
+          "D commence toujours à 7 et finit à 9. La marge de B devient 1."
+        ]
+      },
+      "quiz": [
+        {
+          "prompt": "Pourquoi calcule-t-on un plus long chemin dans un réseau de précédence ?",
+          "options": [
+            "Pour retarder volontairement le projet.",
+            "Parce que toutes les précédences doivent être satisfaites avant la tâche suivante.",
+            "Pour ignorer les tâches courtes."
+          ],
+          "correctIndex": 1,
+          "hint": "Le début dépend du prédécesseur qui termine le dernier.",
+          "explanation": "La chaîne de précédences la plus longue impose une borne inférieure atteinte par les dates au plus tôt dans ce modèle sans ressources supplémentaires."
+        }
+      ],
+      "workshop": {
+        "instructions": [
+          "Dans ce réseau événements-sur-sommets, les poids sont les durées des tâches ; les arcs de poids 0 réunissent les fins de B et C avant D.",
+          "Exécutez le plus long chemin : la durée doit être 9. Ne confondez pas ce réseau à durées sur arcs avec le tableau à durées sur tâches."
+        ],
+        "graph": {
+          "directed": true,
+          "nodes": [
+            {
+              "id": 1,
+              "x": 180,
+              "y": 40
+            },
+            {
+              "id": 2,
+              "x": 288,
+              "y": 75
+            },
+            {
+              "id": 3,
+              "x": 288,
+              "y": 145
+            },
+            {
+              "id": 4,
+              "x": 180,
+              "y": 180
+            },
+            {
+              "id": 5,
+              "x": 72,
+              "y": 145
+            },
+            {
+              "id": 6,
+              "x": 72,
+              "y": 75
+            }
+          ],
+          "edges": [
+            {
+              "source": 1,
+              "destination": 2,
+              "weight": 3
+            },
+            {
+              "source": 2,
+              "destination": 3,
+              "weight": 2
+            },
+            {
+              "source": 2,
+              "destination": 4,
+              "weight": 4
+            },
+            {
+              "source": 3,
+              "destination": 5,
+              "weight": 0
+            },
+            {
+              "source": 4,
+              "destination": 5,
+              "weight": 0
+            },
+            {
+              "source": 5,
+              "destination": 6,
+              "weight": 2
+            }
+          ]
+        },
+        "algorithm": "longest",
+        "expected": {
+          "distance": 9,
+          "path": [
+            1,
+            2,
+            4,
+            5,
+            6
+          ]
+        }
+      },
+      "sourceIds": [
+        "iowa-cpm",
+        "iowa-pert"
+      ]
+    }
+  ]
+}
