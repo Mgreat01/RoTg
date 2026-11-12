@@ -53,7 +53,9 @@ test('arêtes parallèles : minimum indépendant de la saisie et décimales', ()
   for (const algo of ['dijkstra', 'bellman', 'floyd']) {
     const result = run(graph([1, 2], [[1, 2, 1.5], [1, 2, 9]]), algo);
     assert.equal(result.distance, 1.5);
+    assert.deepEqual(result.edges, [0]);
   }
+  assert.deepEqual(run(graph([1, 2], [[1, 2, 1.5], [1, 2, 9]]), 'longest').edges, [1]);
 });
 test('parcours déterministes, cycles et distinction avec un chemin', () => {
   const g = graph([1, 2, 3, 4], [[1, 2, 1], [1, 3, 1], [2, 4, 1], [4, 1, 1]]);

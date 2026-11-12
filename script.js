@@ -23,10 +23,7 @@ function drawGraph() {
   ctx.font = "14px Arial";
   edges.forEach((edge, index) => {
     const from = edge.from, to = edge.to;
-    const path = result?.kind === "path" ? result.path : [];
-    const highlighted = result?.edges?.includes(index) || path.some((id, i) => i < path.length - 1 &&
-      ((id === from.id && path[i + 1] === to.id) ||
-       (directionSelect.value === "undirected" && id === to.id && path[i + 1] === from.id)));
+    const highlighted = result?.edges?.includes(index) ?? false;
     ctx.strokeStyle = highlighted ? "#c026d3" : "#334155";
     ctx.fillStyle = ctx.strokeStyle;
     ctx.beginPath();

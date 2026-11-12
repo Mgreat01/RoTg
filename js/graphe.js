@@ -53,12 +53,25 @@
     }
     fail("INVALID_PATH", "Le chemin ne rejoint pas la source.");
   }
-  function pathResult(c, dist, prev) {
+  function pathEdges(c, path, maximize = false) {
+    const index = new Map(c.ids.map((id, i) => [id, i]));
+    return path.slice(0, -1).map((id, i) => {
+      let chosen = null;
+      for (const arc of c.adjacency[index.get(id)]) {
+        if (arc.v !== index.get(path[i + 1])) continue;
+        if (chosen === null || (maximize ? arc.weight > chosen.weight : arc.weight < chosen.weight)) chosen = arc;
+      }
+      if (chosen === null) fail("INVALID_PATH", "Une arête du chemin est absente.");
+      return chosen.edgeIndex;
+    });
+  }
+  function pathResult(c, dist, prev, maximize = false) {
     const reachable = Number.isFinite(dist[c.t]);
+    const path = reconstruct(prev, c.s, c.t, reachable).map(i => c.ids[i]);
     return {
       status: reachable ? "success" : "unreachable", kind: "path",
       message: reachable ? "Chemin calculé." : "La destination est inaccessible depuis la source.",
-      path: reconstruct(prev, c.s, c.t, reachable).map(i => c.ids[i]), order: [],
+      path, edges: pathEdges(c, path, maximize), order: [],
       distance: reachable ? dist[c.t] : null,
       distances: Object.fromEntries(c.ids.map((id, i) => [id, Number.isFinite(dist[i]) ? dist[i] : null])),
       unreachable: c.ids.filter((_, i) => !Number.isFinite(dist[i])),
@@ -115,7 +128,7 @@
         u = next[u][c.t]; path.push(c.ids[u]);
       }
     }
-    return { status: reachable ? "success" : "unreachable", kind: "path", path, order: [],
+    return { status: reachable ? "success" : "unreachable", kind: "path", path, edges: pathEdges(c, path), order: [],
       message: reachable ? "Chemin et matrice des distances calculés." : "La destination est inaccessible depuis la source.",
       distance: reachable ? dist[c.s][c.t] : null, nodeIds: c.ids,
       distances: Object.fromEntries(c.ids.map((id, i) => [id, Number.isFinite(dist[c.s][i]) ? dist[c.s][i] : null])),
@@ -156,7 +169,7 @@
       const candidate = add(dist[u], e.weight);
       if (candidate > dist[e.v]) { dist[e.v] = candidate; prev[e.v] = u; }
     }
-    return pathResult(c, dist, prev);
+    return pathResult(c, dist, prev, true);
   }
   function kruskal(c, graph) {
     if (graph.directed) fail("UNDIRECTED_REQUIRED", "Kruskal nécessite un graphe non orienté. Changez le type du graphe.");
