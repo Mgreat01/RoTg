@@ -9,6 +9,12 @@ let mode = "node";
 let selectedNode = null;
 let result = null;
 
+// Les coordonnées restent sur la feuille de référence, les symboles gardent
+// une taille lisible quand la feuille est réduite sur téléphone.
+function graphScale() {
+  return canvas.width / (canvas.getBoundingClientRect?.().width || canvas.width);
+}
+
 function setMode(value) {
   mode = value;
   selectedNode = null;
@@ -19,8 +25,10 @@ function invalidate() {
   output.textContent = "Graphe modifié : relancez un calcul.";
 }
 function drawGraph() {
+  const scale = graphScale();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.font = "14px Arial";
+  ctx.font = `${14 * scale}px Arial`;
+  ctx.lineWidth = 1.5 * scale;
   edges.forEach((edge, index) => {
     const from = edge.from, to = edge.to;
     const highlighted = result?.edges?.includes(index) ?? false;
@@ -28,7 +36,7 @@ function drawGraph() {
     ctx.fillStyle = ctx.strokeStyle;
     ctx.beginPath();
     if (from.id === to.id) {
-      ctx.arc(from.x, from.y - 26, 18, 0, Math.PI * 2);
+      ctx.arc(from.x, from.y - 26 * scale, 18 * scale, 0, Math.PI * 2);
     } else {
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
@@ -36,21 +44,21 @@ function drawGraph() {
     ctx.stroke();
     if (directionSelect.value === "directed" && from.id !== to.id) {
       const angle = Math.atan2(to.y - from.y, to.x - from.x);
-      const x = to.x - 21 * Math.cos(angle), y = to.y - 21 * Math.sin(angle);
+      const x = to.x - 21 * scale * Math.cos(angle), y = to.y - 21 * scale * Math.sin(angle);
       ctx.beginPath(); ctx.moveTo(x, y);
-      ctx.lineTo(x - 11 * Math.cos(angle - 0.45), y - 11 * Math.sin(angle - 0.45));
-      ctx.lineTo(x - 11 * Math.cos(angle + 0.45), y - 11 * Math.sin(angle + 0.45));
+      ctx.lineTo(x - 11 * scale * Math.cos(angle - 0.45), y - 11 * scale * Math.sin(angle - 0.45));
+      ctx.lineTo(x - 11 * scale * Math.cos(angle + 0.45), y - 11 * scale * Math.sin(angle + 0.45));
       ctx.closePath(); ctx.fill();
     }
-    ctx.fillText(String(edge.weight), (from.x + to.x) / 2 + 5,
-      from.id === to.id ? from.y - 48 : (from.y + to.y) / 2 - 6);
+    ctx.fillText(String(edge.weight), (from.x + to.x) / 2 + 5 * scale,
+      from.id === to.id ? from.y - 48 * scale : (from.y + to.y) / 2 - 6 * scale);
   });
   nodes.forEach(node => {
-    ctx.beginPath(); ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+    ctx.beginPath(); ctx.arc(node.x, node.y, 20 * scale, 0, Math.PI * 2);
     ctx.fillStyle = result?.path?.includes(node.id) || result?.order?.includes(node.id) ? "#d2e6d5" : "#f5f6ed";
     ctx.fill(); ctx.strokeStyle = selectedNode === node ? "#a65c26" : "#27644f";
     ctx.stroke(); ctx.fillStyle = "#0f172a";
-    ctx.fillText(String(node.id), node.x - 5, node.y + 5);
+    ctx.fillText(String(node.id), node.x - 5 * scale, node.y + 5 * scale);
   });
 }
 canvas.addEventListener("click", event => {
@@ -62,7 +70,7 @@ canvas.addEventListener("click", event => {
     nodes.push({ id: nodes.length + 1, x, y });
     invalidate();
   } else {
-    const clicked = nodes.find(node => Math.hypot(node.x - x, node.y - y) < 20);
+    const clicked = nodes.find(node => Math.hypot(node.x - x, node.y - y) < 20 * graphScale());
     if (!clicked) return;
     if (!selectedNode) selectedNode = clicked;
     else {

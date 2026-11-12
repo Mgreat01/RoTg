@@ -44,6 +44,14 @@ test('annuler ou saisir un poids non fini ne crée aucune arête', () => {
     assert.equal(vm.runInContext('selectedNode', ui.scope), null);
   }
 });
+
+test('un sommet reste sélectionnable sur une feuille réduite à l’écran', () => {
+  const ui = mount(); ui.click(50, 50); ui.click(150, 50);
+  vm.runInContext('setMode("edge")', ui.scope);
+  // 15 pixels visibles du centre : à l’intérieur du disque, malgré l’échelle 2.
+  ui.click(65, 50); ui.click(165, 50); ui.run();
+  assert.match(ui.elements.output.textContent, /coût : 1/);
+});
 test('parcours nommé correctement et Kruskal accessible en non orienté', () => {
   const ui = mount(); ui.click(50, 50); ui.click(150, 50); vm.runInContext('setMode("edge")', ui.scope);
   ui.click(50, 50); ui.click(150, 50); ui.run('bfs');
