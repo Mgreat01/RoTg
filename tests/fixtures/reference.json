@@ -1,0 +1,20 @@
+[
+  {"name":"dijkstra-pondere","nodes":[10,20,30],"edges":[[10,20,2],[20,30,3],[10,30,10]],"directed":true,"algorithm":"dijkstra","expected":{"status":"success","path":[10,20,30],"distance":5,"edges":[0,1]}},
+  {"name":"bellman-poids-negatif","nodes":[1,2,3],"edges":[[1,2,-2],[2,3,1]],"directed":true,"algorithm":"bellman","expected":{"status":"success","path":[1,2,3],"distance":-1}},
+  {"name":"floyd-paralleles","nodes":[1,2],"edges":[[1,2,1.5],[1,2,9]],"directed":true,"algorithm":"floyd","expected":{"status":"success","path":[1,2],"distance":1.5,"matrix":[[0,1.5],[null,0]],"edges":[0]}},
+  {"name":"bfs-ordre","nodes":[1,2,3,4],"edges":[[1,2,1],[1,3,1],[2,4,1]],"directed":true,"algorithm":"bfs","expected":{"status":"success","kind":"traversal","path":[],"order":[1,2,3,4]}},
+  {"name":"dfs-ordre","nodes":[1,2,3,4],"edges":[[1,2,1],[1,3,1],[2,4,1]],"directed":true,"algorithm":"dfs","expected":{"status":"success","kind":"traversal","path":[],"order":[1,2,4,3]}},
+  {"name":"kruskal-foret","nodes":[1,2,3,4],"edges":[[2,1,4],[2,1,1],[2,3,2],[1,1,-8]],"directed":false,"algorithm":"kruskal","expected":{"status":"success","kind":"forest","totalWeight":3,"components":2,"edges":[1,2]}},
+  {"name":"longest-dag","nodes":[1,2,3],"edges":[[1,2,2],[2,3,3],[1,3,10]],"directed":true,"algorithm":"longest","expected":{"status":"success","path":[1,3],"distance":10,"edges":[2]}},
+  {"name":"destination-inaccessible","nodes":[1,2],"edges":[],"directed":true,"algorithm":"dijkstra","expected":{"status":"unreachable","path":[],"distance":null,"unreachable":[2]}},
+  {"name":"cycle-negatif-atteignable","nodes":[1,2,3],"edges":[[1,2,1],[2,3,-2],[3,2,1]],"directed":true,"algorithm":"bellman","expected":{"status":"error","code":"NEGATIVE_CYCLE","path":[]}},
+  {"name":"cycle-negatif-isole-bellman","nodes":[1,2,3],"edges":[[2,3,-2],[3,2,1]],"directed":true,"algorithm":"bellman","expected":{"status":"unreachable","path":[]}},
+  {"name":"cycle-negatif-isole-floyd","nodes":[1,2,3],"edges":[[2,3,-2],[3,2,1]],"directed":true,"algorithm":"floyd","expected":{"status":"error","code":"NEGATIVE_CYCLE"}},
+  {"name":"cycle-interdit-dag","nodes":[1,2],"edges":[[1,2,1],[2,1,1]],"directed":true,"algorithm":"longest","expected":{"status":"error","code":"CYCLIC_GRAPH"}},
+  {"name":"graphe-vide","nodes":[],"edges":[],"directed":true,"algorithm":"bfs","expected":{"status":"error","code":"EMPTY_GRAPH"}},
+  {"name":"sommet-unique","nodes":[7],"edges":[[7,7,2]],"directed":true,"algorithm":"floyd","expected":{"status":"success","path":[7],"distance":0,"matrix":[[0]]}},
+  {"name":"sens-inverse-non-oriente","nodes":[1,2],"edges":[[2,1,4]],"directed":false,"algorithm":"dijkstra","expected":{"status":"success","path":[1,2],"distance":4,"edges":[0]}},
+  {"name":"dijkstra-refuse-negatif","nodes":[1,2],"edges":[[1,2,-1]],"directed":true,"algorithm":"dijkstra","expected":{"status":"error","code":"NEGATIVE_WEIGHT"}},
+  {"name":"kruskal-refuse-oriente","nodes":[1,2],"edges":[[1,2,1]],"directed":true,"algorithm":"kruskal","expected":{"status":"error","code":"UNDIRECTED_REQUIRED"}},
+  {"name":"longest-paralleles","nodes":[1,2],"edges":[[1,2,1.5],[1,2,9]],"directed":true,"algorithm":"longest","expected":{"status":"success","path":[1,2],"distance":9,"edges":[1]}}
+]
