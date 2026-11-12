@@ -21,6 +21,8 @@
     if (!algorithms[algorithm]) fail("UNKNOWN_ALGORITHM", "Algorithme inconnu.");
     if (!graph || !Array.isArray(graph.nodes) || !Array.isArray(graph.edges) || typeof graph.directed !== "boolean")
       fail("INVALID_GRAPH", "Le graphe doit déclarer ses sommets, ses arêtes et son orientation.");
+    if (graph.nodes.some(n => n === null || typeof n !== "object") || graph.edges.some(e => e === null || typeof e !== "object"))
+      fail("INVALID_GRAPH", "Les sommets et les arêtes doivent être des objets.");
     const ids = graph.nodes.map(n => n.id);
     if (!ids.length) fail("EMPTY_GRAPH", "Ajoutez au moins un sommet avant le calcul.");
     if (ids.length > 500 || graph.edges.length > 10000 || (algorithm === "floyd" && ids.length > 100))

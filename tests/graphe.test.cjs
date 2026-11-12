@@ -77,3 +77,9 @@ test('limites numériques et mémoire explicites', () => {
   assert.equal(run(graph([1, 2, 3], [[1, 2, 1e308], [2, 3, 1e308]]), 'dijkstra').code, 'NUMERIC_OVERFLOW');
   assert.equal(run(graph(Array.from({ length: 101 }, (_, i) => i + 1), []), 'floyd').code, 'GRAPH_TOO_LARGE');
 });
+test('format du graphe et algorithme inconnu', () => {
+  assert.equal(run(null, 'dijkstra').code, 'INVALID_GRAPH');
+  assert.equal(run({ nodes: [null], edges: [], directed: true }, 'bfs').code, 'INVALID_GRAPH');
+  assert.equal(run({ nodes: [{ id: 1 }], edges: [null], directed: true }, 'bfs').code, 'INVALID_GRAPH');
+  assert.equal(run(graph(), 'inconnu').code, 'UNKNOWN_ALGORITHM');
+});
