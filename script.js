@@ -24,7 +24,7 @@ function drawGraph() {
   edges.forEach((edge, index) => {
     const from = edge.from, to = edge.to;
     const highlighted = result?.edges?.includes(index) ?? false;
-    ctx.strokeStyle = highlighted ? "#c026d3" : "#334155";
+    ctx.strokeStyle = highlighted ? "#27644f" : "#66756c";
     ctx.fillStyle = ctx.strokeStyle;
     ctx.beginPath();
     if (from.id === to.id) {
@@ -47,8 +47,8 @@ function drawGraph() {
   });
   nodes.forEach(node => {
     ctx.beginPath(); ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
-    ctx.fillStyle = result?.path?.includes(node.id) || result?.order?.includes(node.id) ? "#f5d0fe" : "#dbeafe";
-    ctx.fill(); ctx.strokeStyle = selectedNode === node ? "#c026d3" : "#334155";
+    ctx.fillStyle = result?.path?.includes(node.id) || result?.order?.includes(node.id) ? "#d2e6d5" : "#f5f6ed";
+    ctx.fill(); ctx.strokeStyle = selectedNode === node ? "#a65c26" : "#27644f";
     ctx.stroke(); ctx.fillStyle = "#0f172a";
     ctx.fillText(String(node.id), node.x - 5, node.y + 5);
   });
